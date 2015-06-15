@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import lexer_rules
 
 from sys import argv, stdout

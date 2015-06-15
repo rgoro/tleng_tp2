@@ -1,10 +1,10 @@
+# -*- coding: utf-8 -*-
 tokens = [
-	'COMENTARIO',
-	'NUMERO',
-	'PALABRA',
+	# Caracteres sueltos
 	'COMA',
 	'PUNTO',
-	'NUMERAL',
+	'MENOS',
+	'MAS',
 	'BARRA',
 	'IGUAL',
 	'PAREN_L',
@@ -13,10 +13,27 @@ tokens = [
 	'LLAVE_R',
 	'PUNTO_Y_COMA',
 
-	'TEMPO',
+	# palabras clave
+	'DEF_TEMPO',
+	'DEF_COMPAS',
+	'VOZ',
+	'CONST',
 	'COMPAS',
-	'CONST'
+	'NOTA',
+	'SILENCIO',
+
+	# Elementos musicales
+	'ALTURA',
+	'DURACION',
+
+	# Varios
+	'COMENTARIO',
+	'NUMERO',
+	'CONSTANTE',
 ]
+
+t_DEF_TEMPO = r"\#tempo"
+t_DEF_COMPAS = r"\#compas"
 
 def t_COMENTARIO(token):
 	r"//.*"
@@ -27,22 +44,50 @@ def t_NUMERO(token):
 	token.value = int(token.value)
 	return token
 
-def t_PALABRA(token):
+# Quizás sea un error incorporar los bemoles/sostenidos y los puntillos a
+# estos dos tokens, se verá cuánto nos complica la vida.
+def t_ALTURA(token):
+	r"(do|re|mi|fa|sol|la|si)(-|\+)?"
+	return token
+
+def t_DURACION(token):
+	r"(redonda|blanca|negra|corchea|semicorchea|fusa|semifusa)(\.)?"
+	return token
+
+# Estos cinco pensé que se podían definir como simples, pero no, si los
+# definimos como «t_CONST = r"const"», se lexerean (?) como t_CONSTANTE 
+def t_CONST(token):
+	r"const"
+	return token
+
+def t_VOZ(token):
+	r"voz"
+	return token
+
+def t_COMPAS(token):
+	r"compas"
+	return token
+
+def t_NOTA(token):
+	r"nota"
+	return token
+
+def t_SILENCIO(token):
+	r"silencio"
+	return token
+
+def t_CONSTANTE(token):
 	r"\w+"
-	token.value = token.value
 	return token
 
 def t_NEWLINE(token):
   r"\n+"
   token.lexer.lineno += len(token.value)
 
-
-t_TEMPO = r"\#tempo"
-t_COMPAS = r"\#compas"
-t_CONST = r"const"
 t_COMA = r","
 t_PUNTO = r"\."
-t_NUMERAL = r"\#"
+t_MENOS = r"-"
+t_MAS = r"\+"
 t_BARRA = r"/"
 t_IGUAL = r"="
 t_PAREN_L = r"\("
