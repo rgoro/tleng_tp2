@@ -13,7 +13,7 @@ class Duracion(object):
         self.valor = valor.strip('.')
 
     def __repr__(self):
-        return self.valor + ("." if self.puntillo else "")
+        return self.valor + (" con puntillo" if self.puntillo else "")
 
 class Altura(object):
     def __init__(self, valor):
@@ -22,7 +22,7 @@ class Altura(object):
         self.valor = valor.strip('+-')
 
     def __repr__(self):
-        return self.valor + ("+" if self.sostenido else ("-" if self.bemol else ""))
+        return self.valor + (" sostenido" if self.sostenido else (" bemol" if self.bemol else ""))
 
 class DefTempo(object):
     def __init__(self, duracion, valor):
