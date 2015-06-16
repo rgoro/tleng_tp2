@@ -14,7 +14,7 @@ def p_def_tempo(sub):
 
 def p_def_compas(sub):
     'def_compas : DEF_COMPAS num BARRA num'
-    sub[0] = DefCompas(Numero(sub[1]), sub[3])
+    sub[0] = DefCompas(Numero(sub[2]), sub[4])
 
 def p_constantes(sub):
     '''constantes : constante PUNTO_Y_COMA
