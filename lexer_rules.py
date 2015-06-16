@@ -21,6 +21,7 @@ tokens = [
     'COMPAS',
     'NOTA',
     'SILENCIO',
+    'REPETIR',
 
     # Elementos musicales
     'ALTURA',
@@ -44,10 +45,10 @@ def t_NUMERO(token):
     token.value = int(token.value)
     return token
 
-# Estos cinco pensé que se podían definir como simples, pero no, si los
+# Estos seis pensé que se podían definir como simples, pero no, si los
 # definimos como «t_CONST = r"const"», se lexerean (?) como t_CONSTANTE.
 # Además, las notas tienen que ir abajo, si no "silencio" se parsea como 
-# "Altura(si) Constante(lencio)"
+# "Altura(si) Constante(lencio)" (ídem "repetir")
 def t_CONST(token):
     r"const"
     return token
@@ -66,6 +67,10 @@ def t_NOTA(token):
 
 def t_SILENCIO(token):
     r"silencio"
+    return token
+
+def t_REPETIR(token):
+    r"repetir"
     return token
 
 # Quizás sea un error incorporar los bemoles/sostenidos y los puntillos a
