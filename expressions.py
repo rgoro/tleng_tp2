@@ -85,6 +85,9 @@ class Voz(object):
         return str(self.instrumento) + ": " + str(self.compases)
 
 class MusiLen(object):
+    # TODO: Este constructor bien podría hacer un par de cosas más, como:
+    #  * Convertir las constantes de lista a diccionario
+    #  * Reemplazar las constantes por números en las voces
     def __init__(self, def_tempo, def_compas, constantes, voces):
         self.def_tempo = def_tempo
         self.def_compas = def_compas
