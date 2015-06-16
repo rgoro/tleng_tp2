@@ -4,6 +4,8 @@ tokens = [
     # Caracteres sueltos
     'COMA',
     'PUNTO_Y_COMA',
+    'PAREN_L',
+    'PAREN_R',
     'LLAVE_L',
     'LLAVE_R',
 
@@ -19,6 +21,8 @@ t_ignore = " \t"
 
 t_COMA = r","
 t_PUNTO_Y_COMA = r";"
+t_PAREN_L = r"\("
+t_PAREN_R = r"\)"
 t_LLAVE_L = r"\["
 t_LLAVE_R = r"\]"
 
