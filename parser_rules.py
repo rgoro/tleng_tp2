@@ -84,7 +84,7 @@ def p_var(sub):
 
 def p_num(sub):
     'num : NUMERO'
-    sub[0] = Numero(sub[1])
+    sub[0] = int(sub[1])
 
 def p_label(sub):
     'label : CONSTANTE'

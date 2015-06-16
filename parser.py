@@ -48,4 +48,4 @@ if __name__ == "__main__":
 
     algo = parser.parse(text, lexer)
 
-    #print algo
+    print algo

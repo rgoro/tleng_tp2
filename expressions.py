@@ -30,7 +30,7 @@ class DefTempo(object):
         self.valor = valor
 
     def __repr__(self):
-        return "tempo: " + self.duracion + " = " + self.valor
+        return "tempo: " + str(self.duracion) + " = " + str(self.valor)
 
 
 # FIXME lo llamo duracion, pero ahí va un número, no un objeto Duracion
@@ -40,7 +40,7 @@ class DefCompas(object):
         self.duracion = duracion
 
     def __repr__(self):
-        return "compas: " + self.tiempos + "/" + self.duracion
+        return "compas: " + str(self.tiempos) + "/" + str(self.duracion)
 
 class Constante(object):
     def __init__(self, label, valor):
@@ -67,14 +67,14 @@ class Nota(Figura):
         self.duracion = duracion
 
     def __repr__(self):
-        return "Nota: <" + self.altura + " -- " + self.octava + " -- " + self.duracion + ">"
+        return "Nota: <" + str(self.altura) + " -- " + str(self.octava) + " -- " + str(self.duracion) + ">"
 
 class Silencio(Figura):
     def __init__(self, duracion):
         self.duracion = duracion
 
     def __repr__(self):
-        return "Silencio: <" + self.duracion + ">"
+        return "Silencio: <" + str(self.duracion) + ">"
 
 class Voz(object):
     def __init__(self, instrumento, compases):
@@ -92,5 +92,5 @@ class MusiLen(object):
         self.voces = voces
 
     def __repr__(self):
-        return "Musilen {\n\t" + str(self.def_tempo) + "\n\t" + str(self.def_compas) + "\n\t" + self.constantes + "\n\t" + self.voces + "\n}"
+        return "Musilen {\n\t" + str(self.def_tempo) + "\n\t" + str(self.def_compas) + "\n\t" + str(self.constantes) + "\n\t" + str(self.voces) + "\n}"
 
