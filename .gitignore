@@ -3,3 +3,5 @@ __pycache__/
 *.py[cod]
 .*.swp
 
+*parser.out
+*parsetab.py
