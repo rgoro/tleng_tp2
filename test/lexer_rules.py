@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 
 tokens = [
-	# Caracteres sueltos
-	'COMA',
-	'LLAVE_L',
-	'LLAVE_R',
+    # Caracteres sueltos
+    'COMA',
+    'PUNTO_Y_COMA',
+    'LLAVE_L',
+    'LLAVE_R',
 
-	'NUMERO',
+    'NUMERO',
 ]
 
 def t_NUMERO(token):
-	r"[1-9][0-9]*"
-	token.value = int(token.value)
-	return token
+    r"[1-9][0-9]*"
+    token.value = int(token.value)
+    return token
 
 t_ignore = " \t"
 
 t_COMA = r","
+t_PUNTO_Y_COMA = r";"
 t_LLAVE_L = r"\["
 t_LLAVE_R = r"\]"
 
