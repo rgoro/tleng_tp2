@@ -5,15 +5,15 @@ from lexer_rules import tokens
 from expressions import *
 
 def p_musilen(sub):
-    'musilen : tempo compas constantes voces'
+    'musilen : def_tempo def_compas constantes voces'
     sub[0] = MusiLen(sub[1], sub[2], sub[3], sub[4])
 
-def p_tempo(sub):
-    'tempo : DEF_TEMPO DURACION num'
+def p_def_tempo(sub):
+    'def_tempo : DEF_TEMPO DURACION num'
     sub[0] = DefTempo(Duracion(sub[2]), sub[3])
 
-def p_compas(sub):
-    'compas : DEF_COMPAS num BARRA num'
+def p_def_compas(sub):
+    'def_compas : DEF_COMPAS num BARRA num'
     sub[0] = DefCompas(Numero(sub[1]), sub[3])
 
 def p_constantes(sub):
@@ -52,7 +52,7 @@ def p_compases(sub):
         sub[0].insert(0, sub[1])
 
 def p_compas(sub):
-    'COMPAS LLAVE_L figuras'
+    'compas : COMPAS LLAVE_L figuras'
     sub[0] = Compas(sub[3])
 
 def p_figuras(sub): 
@@ -89,3 +89,7 @@ def p_num(sub):
 def p_label(sub):
     'label : CONSTANTE'
     sub[0] = sub[1]
+
+#def p_error(sub):
+#    raise Exception("Syntax error.")
+

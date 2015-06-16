@@ -77,7 +77,7 @@ class Silencio(Figura):
         return "Silencio: <" + self.duracion + ">"
 
 class Voz(object):
-    def __init(self, instrumento, compases):
+    def __init__(self, instrumento, compases):
         self.instrumento = instrumento
         self.compases = compases
 
