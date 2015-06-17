@@ -41,7 +41,7 @@ def t_COMENTARIO(token):
     pass
 
 def t_NUMERO(token):
-    r"[1-9][0-9]*"
+    r"(0|[1-9][0-9]*)"
     token.value = int(token.value)
     return token
 
