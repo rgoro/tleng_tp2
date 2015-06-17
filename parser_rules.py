@@ -46,7 +46,9 @@ def p_voz(sub):
                       #| lista_compases repetir'''
 def p_lista_compases(sub):
     '''lista_compases : compases
-                      | repetir'''
+                      | repetir
+                      | lista_compases compases
+                      | lista_compases repetir'''
     if len(sub) == 2:
         sub[0] = sub[1]
     elif len(sub) == 3:
