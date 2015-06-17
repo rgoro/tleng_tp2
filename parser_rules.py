@@ -51,8 +51,6 @@ def p_lista_compases(sub):
         sub[0] = sub[1]
     elif len(sub) == 3:
         sub[0] = sub[1] + sub[2]
-    else:
-        sub[0] = sub[1] + sub[3] + sub[5]
 
 def p_compases(sub):
     '''compases : compas LLAVE_R
@@ -64,7 +62,7 @@ def p_compases(sub):
         sub[0].insert(0, sub[1])
 
 def p_repetir(sub):
-    'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases'
+    'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases LLAVE_R'
     sub[0] = []
     for i in range(int(sub[3])):
         sub[0] += sub[6]
