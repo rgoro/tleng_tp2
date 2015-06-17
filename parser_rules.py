@@ -27,7 +27,7 @@ def p_constantes(sub):
 
 def p_constante(sub):
     'constante : CONST label IGUAL num'
-    sub[0] = Constante(sub[2], sub[4])
+    sub[0] = (sub[2], sub[4])
 
 def p_voces(sub):
     '''voces : voz LLAVE_R
