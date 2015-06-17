@@ -39,17 +39,35 @@ def p_voces(sub):
         sub[0].insert(0, sub[1])
 
 def p_voz(sub):
-    'voz : VOZ PAREN_L var PAREN_R LLAVE_L compases'
+    'voz : VOZ PAREN_L var PAREN_R LLAVE_L lista_compases'
     sub[0] = Voz(sub[3], sub[6])
+
+                      #| lista_compases compases
+                      #| lista_compases repetir'''
+def p_lista_compases(sub):
+    '''lista_compases : compases
+                      | repetir'''
+    if len(sub) == 2:
+        sub[0] = sub[1]
+    elif len(sub) == 3:
+        sub[0] = sub[1] + sub[2]
+    else:
+        sub[0] = sub[1] + sub[3] + sub[5]
 
 def p_compases(sub):
     '''compases : compas LLAVE_R
-             | compas LLAVE_R compases'''
+                | compas LLAVE_R compases'''
     if len(sub) == 3:
         sub[0] = [sub[1]]
     else:
         sub[0] = sub[3]
         sub[0].insert(0, sub[1])
+
+def p_repetir(sub):
+    'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases'
+    sub[0] = []
+    for i in range(int(sub[3])):
+        sub[0] += sub[6]
 
 def p_compas(sub):
     'compas : COMPAS LLAVE_L figuras'
