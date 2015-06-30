@@ -123,7 +123,7 @@ class Nota(Figura):
     def get_midicomp(self, canal, compas, pulso_inicial, click_inicial, cpr):
         (pulso_final, click_final) = self.get_pulsos(pulso_inicial, click_inicial, cpr)
         midicomp = str(compas).zfill(3) + ":" + str(pulso_inicial).zfill(2) + ":" + str(click_inicial).zfill(3)
-        midicomp += " On ch=" + canal + " note=" + self.get_nota() + " vol=70\n"
+        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + " vol=70\n"
         midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
         midicomp += " Off ch=" + canal + " note=" + self.get_nota() + " vol=0\n"
 
