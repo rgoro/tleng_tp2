@@ -7,31 +7,6 @@ from sys import argv, exit
 from ply.lex import lex
 from ply.yacc import yacc
 
-
-#def dump_ast(ast, output_file):
-#    output_file.write("digraph {\n")
-#    
-#    edges = []
-#    queue = [ast]
-#    numbers = {ast: 1}
-#    current_number = 2
-#    while len(queue) > 0:
-#        node = queue.pop(0)
-#        name = node.name()
-#        number = numbers[node]
-#        output_file.write('node[width=1.5, height=1.5, shape="circle", label="%s"] n%d;\n' % (name, number))
-#        for child in node.children():
-#            numbers[child] = current_number
-#            edge = 'n%d -> n%d;\n' % (number, current_number)
-#            edges.append(edge)
-#            queue.append(child)
-#            current_number += 1
-#
-#    output_file.write("".join(edges))
-#
-#    output_file.write("}")
-
-
 if __name__ == "__main__":
     if len(argv) != 2:
         print "Parametros invalidos."
@@ -47,5 +22,6 @@ if __name__ == "__main__":
     parser = yacc(module=parser_rules)
 
     algo = parser.parse(text, lexer)
+    algo.reemplazar_constantes()
 
     print algo

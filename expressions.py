@@ -84,6 +84,18 @@ class MusiLen(object):
         self.constantes = dict(constantes)
         self.voces = voces
 
+    def reemplazar_constantes(self):
+        for voz in self.voces:
+            if voz.instrumento in self.constantes.keys():
+                voz.instrumento = self.constantes[voz.instrumento]
+
+            for compas in voz.compases:
+                for figura in compas.figuras:
+                    if type(figura) == Nota and figura.octava in self.constantes.keys():
+                        figura.octava = self.constantes[figura.octava]
+
+            
+
     def __repr__(self):
         return "Musilen {\n\t" + str(self.def_tempo) + "\n\t" + str(self.def_compas) + "\n\t" + str(self.constantes) + "\n\t" + str(self.voces) + "\n}"
 
