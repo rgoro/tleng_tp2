@@ -4,13 +4,6 @@ from math import ceil
 
 CLICKS_POR_PULSO = 384
 
-class Numero(object):
-    def __init__(self, valor):
-        self.valor = valor
-
-    def __repr__(self):
-        return str(self.valor)
-
 class Duracion(object):
     def __init__(self, valor):
         self.puntillo = '.' in valor
@@ -36,10 +29,11 @@ class Duracion(object):
 
     def get_clicks(self, clicks_por_redonda):
         f = self.get_valor_tempo()
+        clicks = int(clicks_por_redonda / f)
         if self.puntillo:
-            f *= 1.5
+            clicks = int(clicks * 1.5)
 
-        return clicks_por_redonda / f
+        return clicks
 
     def __repr__(self):
         return self.valor + (" con puntillo" if self.puntillo else "")
@@ -99,7 +93,7 @@ class DefCompas(object):
         self.duracion = duracion
 
     def __repr__(self):
-        return "compas: " + str(self.tiempos) + "/" + str(self.duracion)
+        return str(self.tiempos) + "/" + str(self.duracion)
 
 
 #Uso herencia por instinto de programador, no estoy seguro si la voy a necesitar.
@@ -109,7 +103,7 @@ class Figura(object):
         pulso = pulso_inicial + int(ceil(clicks_total / CLICKS_POR_PULSO))
         clicks = clicks_total % CLICKS_POR_PULSO
 
-        return (pulso, clicks)
+        return (int(pulso), int(clicks))
 
 class Nota(Figura):
     def __init__(self, altura, octava, duracion):
@@ -120,12 +114,17 @@ class Nota(Figura):
     def get_nota(self):
         return self.altura.get_nota_americana() + str(self.octava)
 
-    def get_midicomp(self, canal, compas, pulso_inicial, click_inicial, cpr):
+    def get_midicomp(self, canal, compas, pulso_inicial, click_inicial, cpr, pulsos_por_compas):
         (pulso_final, click_final) = self.get_pulsos(pulso_inicial, click_inicial, cpr)
         midicomp = str(compas).zfill(3) + ":" + str(pulso_inicial).zfill(2) + ":" + str(click_inicial).zfill(3)
-        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + " vol=70\n"
-        midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
-        midicomp += " Off ch=" + canal + " note=" + self.get_nota() + " vol=0\n"
+        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=70\n"
+        
+        if pulso_final < pulsos_por_compas:
+            midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
+        else:
+            midicomp += str(compas + 1).zfill(3) + ":00:000"
+
+        midicomp += " Off ch=" + canal + " note=" + self.get_nota() + "  vol=0\n"
 
         return (midicomp, pulso_final, click_final)
 
@@ -136,7 +135,8 @@ class Silencio(Figura):
     def __init__(self, duracion):
         self.duracion = duracion
 
-    def get_midicomp(self, canal, compas, pulso_inicial, clicks_inicial, cpr):
+    #FIXME Testear que ignorar los pulsos por compas no joda la vida acá.
+    def get_midicomp(self, canal, compas, pulso_inicial, clicks_inicial, cpr, ppc):
         (pulso_final, clicks_final) = self.get_pulsos(pulso_inicial, clicks_inicial, cpr)
         midicomp = ""
 
@@ -149,12 +149,12 @@ class Compas(object):
     def __init__(self, figuras):
         self.figuras = figuras
 
-    def get_midicomp(self, canal, nro_compas, clicks_por_redonda):
+    def get_midicomp(self, canal, nro_compas, clicks_por_redonda, pulsos_por_compas):
         pulso = 0
         clicks = 0
         midicomp = ""
         for f in self.figuras:
-            (midicomp_figura, pulso, clicks) = f.get_midicomp(canal, nro_compas, pulso, clicks, clicks_por_redonda)
+            (midicomp_figura, pulso, clicks) = f.get_midicomp(canal, nro_compas, pulso, clicks, clicks_por_redonda, pulsos_por_compas)
             midicomp += midicomp_figura
 
         return midicomp
@@ -167,15 +167,14 @@ class Voz(object):
         self.instrumento = instrumento
         self.compases = compases
 
-    def get_midicomp(self, id, clicks_por_redonda):
-        midicomp = "Mtrk\n"
-        midicomp += "000:00:000 Meta TrkName \"voz_" + id + "\"\n"
-        midicomp += "000:00:000 Tempo ProgCh ch=" + id + " prog=" + str(self.instrumento) + "\n"
-        midicomp += "000:00:000 On ch=" + id + " note=c5 vol=70\n"
+    def get_midicomp(self, id, clicks_por_redonda, pulsos_por_compas):
+        midicomp = "MTrk\n"
+        midicomp += "000:00:000 Meta TrkName \"Voz " + id + "\"\n"
+        midicomp += "000:00:000 ProgCh ch=" + id + " prog=" + str(self.instrumento) + "\n"
 
         compas = 0
         for c in self.compases:
-            midicomp += c.get_midicomp(id, compas, clicks_por_redonda)
+            midicomp += c.get_midicomp(id, compas, clicks_por_redonda, pulsos_por_compas)
             compas += 1
 
         midicomp += str(compas).zfill(3) + ":00:000 Meta TrkEnd\n"
@@ -202,10 +201,10 @@ class MusiLen(object):
     def get_midicomp(self):
         self.reemplazar_constantes()
         midicomp = self.get_header()
-        clicks_por_redonda = CLICKS_POR_PULSO*self.def_tempo.get_tempo_midi()
+        clicks_por_redonda = CLICKS_POR_PULSO*self.def_compas.duracion
         i = 1
         for voz in self.voces:
-            midicomp += voz.get_midicomp(str(i), clicks_por_redonda)
+            midicomp += voz.get_midicomp(str(i), clicks_por_redonda, self.def_compas.tiempos)
             i += 1
 
         return midicomp
@@ -222,10 +221,10 @@ class MusiLen(object):
 
             
     def get_header(self):
-        header = "MFile1 " + str(len(self.voces)) + " " + str(CLICKS_POR_PULSO) + "\n\n"
+        header = "MFile 1 " + str(len(self.voces) + 1) + " " + str(CLICKS_POR_PULSO) + "\n"
         header += "MTrk\n"
-        header += "000:00:000 TimeSig " + str(self.def_compas) + " 24 8\n"
         header += "000:00:000 Tempo " + str(self.def_tempo.get_tempo_midi()) + "\n"
+        header += "000:00:000 TimeSig " + str(self.def_compas) + " 24 8\n"
         header += "000:00:000 Meta TrkEnd\n"
         header += "TrkEnd\n"
 

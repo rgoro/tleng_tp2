@@ -24,5 +24,6 @@ if __name__ == "__main__":
     algo = parser.parse(text, lexer)
     algo.reemplazar_constantes()
 
-    print algo
-    print algo.get_midicomp()
+    #print algo
+    midicomp = algo.get_midicomp()
+    print midicomp
