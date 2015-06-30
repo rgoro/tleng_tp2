@@ -12,6 +12,22 @@ class Duracion(object):
         self.puntillo = '.' in valor
         self.valor = valor.strip('.')
 
+    def get_valor_tempo(self):
+        if self.valor == "redonda":
+            return 1
+        elif self.valor == "blanca":
+            return 2
+        elif self.valor == "negra":
+            return 4
+        elif self.valor == "corchea":
+            return 8
+        elif self.valor == "semicorchea":
+            return 16
+        elif self.valor == "fusa":
+            return 32
+        elif self.valor == "semifusa":
+            return 64
+
     def __repr__(self):
         return self.valor + (" con puntillo" if self.puntillo else "")
 
@@ -28,6 +44,9 @@ class DefTempo(object):
     def __init__(self, duracion, valor):
         self.duracion = duracion
         self.valor = valor
+
+    def get_tempo_midi(self):
+        return (1000000 * 60 * self.duracion.get_valor_tempo())/(4 * self.valor)
 
     def __repr__(self):
         return "tempo: " + str(self.duracion) + " = " + str(self.valor)
@@ -95,6 +114,15 @@ class MusiLen(object):
                         figura.octava = self.constantes[figura.octava]
 
             
+    def get_header(self):
+        header = "MFile1 " + str(len(self.voces)) + "384\n\n"
+        header += "Mtrk\n"
+        header += "000:00:000 TimeSig " + str(self.def_compas) + " 24 8\n"
+        header += "000:00:000 Tempo " + str(self.def_tempo.get_tempo_midi()) + "\n"
+        header += "000:00:000 Meta TrkEnd\n"
+        header += "TrkEnd\n"
+
+        return header
 
     def __repr__(self):
         return "Musilen {\n\t" + str(self.def_tempo) + "\n\t" + str(self.def_compas) + "\n\t" + str(self.constantes) + "\n\t" + str(self.voces) + "\n}"

@@ -25,3 +25,4 @@ if __name__ == "__main__":
     algo.reemplazar_constantes()
 
     print algo
+    print algo.get_header()
