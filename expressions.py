@@ -93,6 +93,19 @@ class Voz(object):
         self.instrumento = instrumento
         self.compases = compases
 
+    def get_midicomp(self):
+        midicomp = self.get_header
+
+        return midicomp
+
+    def get_header(self):
+        header += "Mtrk\n"
+        header += "000:00:000 TimeSig " + str(self.def_compas) + " 24 8\n"
+        header += "000:00:000 Tempo " + str(self.def_tempo.get_tempo_midi()) + "\n"
+        header += "000:00:000 Meta TrkEnd\n"
+        header += "TrkEnd\n"
+
+
     def __repr__(self):
         return str(self.instrumento) + ": " + str(self.compases)
 
@@ -102,6 +115,18 @@ class MusiLen(object):
         self.def_compas = def_compas
         self.constantes = dict(constantes)
         self.voces = voces
+        if not self.validar_voces():
+            raise Exception("Voces inconsistentes")
+
+    # TODO: validar y tirar excepciones razonables
+    def validar_voces():
+        return true
+
+    def get_midicomp(self):
+        self.reemplazar_constantes()
+        midicomp = self.get_header()
+        for voz in self.voces:
+            midicomp += voz.get_midicomp() #Seguramente hay que pasar el tempo acá.
 
     def reemplazar_constantes(self):
         for voz in self.voces:
