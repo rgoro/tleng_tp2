@@ -21,9 +21,9 @@ if __name__ == "__main__":
     lexer = lex(module=lexer_rules)
     parser = yacc(module=parser_rules)
 
-    algo = parser.parse(text, lexer)
-    algo.reemplazar_constantes()
-
-    #print algo
-    midicomp = algo.get_midicomp()
-    print midicomp
+    try:
+        algo = parser.parse(text, lexer)
+        midicomp = algo.get_midicomp()
+        print midicomp
+    except Exception as e:
+        print e.message

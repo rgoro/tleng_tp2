@@ -152,7 +152,7 @@ class Compas(object):
     def validar(self, nro_voz, nro_compas, def_compas):
         suma_duraciones = 0
         for f in self.figuras:
-            suma_duraciones += 1/f.duracion.get_valor_tempo()
+            suma_duraciones += 1.0/f.duracion.get_valor_tempo()
 
         if suma_duraciones < def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado corto.".format(nro_voz, nro_compas))
@@ -212,7 +212,6 @@ class MusiLen(object):
         if not self.validar_voces():
             raise Exception("Voces inconsistentes (aunque tendrían que lanzar su propia excepción).")
 
-    # TODO: validar y tirar excepciones razonables
     def validar_voces(self):
         i = 1
         for v in self.voces:

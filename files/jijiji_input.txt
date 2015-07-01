@@ -1,0 +1,60 @@
+// ----------------
+// Solo de Ji Ji Ji
+// ----------------
+
+#tempo negra 120
+#compas 4/4
+
+const oct1 = 5;
+const oct2 = 6;
+
+// Instrumentos
+const violin = 42;
+
+voz (violin)
+{
+	compas
+	{
+		nota(la, oct1, semicorchea);
+		nota(la, oct1, semicorchea);
+		nota(la, oct1, semicorchea);
+		nota(la, oct1, semicorchea);
+
+		nota(la, oct1, semicorchea);
+		nota(la, oct1, semicorchea);
+		nota(la, oct1, semicorchea);
+		nota(la, oct1, semicorchea);
+
+		nota(la, oct1, semicorchea);
+		silencio(semicorchea);
+		silencio(semicorchea);
+		nota(la, oct1, semicorchea);
+
+		nota(re, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+	}
+
+	compas
+	{
+		nota(sol, oct2, semicorchea);
+		nota(la, oct2, corchea);
+		nota(la, oct2, semicorchea.);
+		silencio(fusa);
+
+		// Acá hay un tresillo y no se qué onda
+		nota(sol, oct2, fusa);
+		nota(la, oct2, fusa);
+		nota(sol, oct2, fusa); // Esto en la part. es una corchea, fin del tresillo
+		nota(la, oct2, fusa);
+		//nota(sol, oct2, fusa);
+		nota(sol, oct2, fusa);
+		nota(fa, oct2, corchea);
+		nota(re, oct2, corchea);
+
+		nota(do, oct2, negra);
+		nota(do, oct2, semicorchea);
+	}
+}
+
