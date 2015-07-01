@@ -149,6 +149,18 @@ class Compas(object):
     def __init__(self, figuras):
         self.figuras = figuras
 
+    def validar(self, nro_voz, nro_compas, def_compas):
+        suma_duraciones = 0
+        for f in self.figuras:
+            suma_duraciones += 1/f.duracion.get_valor_tempo()
+
+        if suma_duraciones < def_compas.tiempos / def_compas.duracion:
+            raise Exception("Voz {0} incorrecta: el compás {1} es demasiado corto.".format(nro_voz, nro_compas))
+        elif suma_duraciones > def_compas.tiempos / def_compas.duracion:
+            raise Exception("Voz {0} incorrecta: el compás {1} es demasiado largo.".format(nro_voz, nro_compas))
+        else:
+            return True
+
     def get_midicomp(self, canal, nro_compas, clicks_por_redonda, pulsos_por_compas):
         pulso = 0
         clicks = 0
@@ -166,6 +178,12 @@ class Voz(object):
     def __init__(self, instrumento, compases):
         self.instrumento = instrumento
         self.compases = compases
+
+    def validar(self, nro_voz, def_compas):
+        i = 1
+        for c in self.compases:
+            c.validar(nro_voz, i, def_compas)
+            i += 1
 
     def get_midicomp(self, id, clicks_por_redonda, pulsos_por_compas):
         midicomp = "MTrk\n"
@@ -192,10 +210,15 @@ class MusiLen(object):
         self.constantes = dict(constantes)
         self.voces = voces
         if not self.validar_voces():
-            raise Exception("Voces inconsistentes")
+            raise Exception("Voces inconsistentes (aunque tendrían que lanzar su propia excepción).")
 
     # TODO: validar y tirar excepciones razonables
     def validar_voces(self):
+        i = 1
+        for v in self.voces:
+            v.validar(i, self.def_compas)
+            i += 1
+
         return True
 
     def get_midicomp(self):
