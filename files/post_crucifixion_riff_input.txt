@@ -20,7 +20,7 @@ voz (piano)
 		{
 			nota(la, oct0, corchea);
 			nota(do, oct1, corchea);
-			nota(mi, oct1, corchea);
+			nota(re, oct1, corchea);
 
 			nota(re+, oct1, corchea);
 			nota(mi, oct1, corchea);
