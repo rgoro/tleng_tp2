@@ -25,8 +25,6 @@ class Duracion(object):
         elif self.valor == "semifusa":
             return 64
 
-        return self.get_valor_tempo
-
     def get_clicks(self, clicks_por_redonda):
         f = self.get_valor_tempo()
         clicks = int(clicks_por_redonda / f)
@@ -152,11 +150,20 @@ class Compas(object):
     def validar(self, nro_voz, nro_compas, def_compas):
         suma_duraciones = 0
         for f in self.figuras:
-            suma_duraciones += 1.0/f.duracion.get_valor_tempo()
+            duracion = f.duracion.get_valor_tempo()
+            if f.duracion.puntillo:
+                #print suma_duraciones, "+= 1 /", duracion
+                suma_duraciones += 1.0/duracion
+                #print suma_duraciones, "+= 1 /", duracion * 0.5
+                suma_duraciones += 1.0/duracion * 0.5
+            else:
+                #print suma_duraciones, "+= 1 /", duracion
+                suma_duraciones += 1.0/duracion
 
-        if suma_duraciones < def_compas.tiempos / def_compas.duracion:
+        #print suma_duraciones, "?", def_compas.tiempos, "/", def_compas.duracion, "=",  1.0*def_compas.tiempos / def_compas.duracion
+        if suma_duraciones < 1.0*def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado corto.".format(nro_voz, nro_compas))
-        elif suma_duraciones > def_compas.tiempos / def_compas.duracion:
+        elif suma_duraciones > 1.0*def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado largo.".format(nro_voz, nro_compas))
         else:
             return True
