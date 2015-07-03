@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import lexer_rules
 import parser_rules
@@ -12,7 +13,7 @@ if __name__ == "__main__":
         print "Parametros invalidos."
         print "Uso:"
         print "  parser.py archivo_entrada"
-        exit()
+        exit(1)
 
     input_file = open(argv[1], "r")
     text = input_file.read()
@@ -27,3 +28,4 @@ if __name__ == "__main__":
         print midicomp
     except Exception as e:
         print e.message
+        exit(1)
