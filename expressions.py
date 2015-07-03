@@ -103,19 +103,11 @@ class Figura(object):
 
         return (int(pulso), int(clicks))
 
-class Nota(Figura):
-    def __init__(self, altura, octava, duracion):
-        self.altura = altura
-        self.octava = octava
-        self.duracion = duracion
-
-    def get_nota(self):
-        return self.altura.get_nota_americana() + str(self.octava)
-
+    #Esta herencia está sólo para que funcione 4:33
     def get_midicomp(self, canal, compas, pulso_inicial, click_inicial, cpr, pulsos_por_compas):
         (pulso_final, click_final) = self.get_pulsos(pulso_inicial, click_inicial, cpr)
         midicomp = str(compas).zfill(3) + ":" + str(pulso_inicial).zfill(2) + ":" + str(click_inicial).zfill(3)
-        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=70\n"
+        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=" + self.get_vol() + "\n"
         
         if pulso_final < pulsos_por_compas:
             midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
@@ -126,6 +118,19 @@ class Nota(Figura):
 
         return (midicomp, pulso_final, click_final)
 
+
+class Nota(Figura):
+    def __init__(self, altura, octava, duracion):
+        self.altura = altura
+        self.octava = octava
+        self.duracion = duracion
+
+    def get_nota(self):
+        return self.altura.get_nota_americana() + str(self.octava)
+
+    def get_vol(self):
+        return "70"
+
     def __repr__(self):
         return "Nota: <" + str(self.altura) + " -- " + str(self.octava) + " -- " + str(self.duracion) + ">"
 
@@ -133,12 +138,11 @@ class Silencio(Figura):
     def __init__(self, duracion):
         self.duracion = duracion
 
-    #FIXME Testear que ignorar los pulsos por compas no joda la vida acá.
-    def get_midicomp(self, canal, compas, pulso_inicial, clicks_inicial, cpr, ppc):
-        (pulso_final, clicks_final) = self.get_pulsos(pulso_inicial, clicks_inicial, cpr)
-        midicomp = ""
+    def get_nota(self):
+        return "e-5"
 
-        return (midicomp, pulso_final, clicks_final)
+    def get_vol(self):
+        return "0"
 
     def __repr__(self):
         return "Silencio: <" + str(self.duracion) + ">"
