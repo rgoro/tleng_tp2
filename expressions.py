@@ -190,11 +190,17 @@ class Voz(object):
         self.instrumento = instrumento
         self.compases = compases
 
-    def validar(self, nro_voz, def_compas):
+    def validar(self, nro_voz, def_compas, cant_compases):
+        # FIXME comentado porque uno de los ejemplos de la cátedra tiene este problema.
+        #if len(self.compases) != cant_compases:
+        #    raise Exception("La voz {0} tiene compases de más o de menos".format(nro_voz))
+
         i = 1
         for c in self.compases:
             c.validar(nro_voz, i, def_compas)
             i += 1
+            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
+                i += 1
 
     def get_midicomp(self, id, clicks_por_redonda, pulsos_por_compas):
         midicomp = "MTrk\n"
@@ -225,8 +231,9 @@ class MusiLen(object):
 
     def validar_voces(self):
         i = 1
+        cant_compases = len(self.voces[0].compases)
         for v in self.voces:
-            v.validar(i, self.def_compas)
+            v.validar(i, self.def_compas, cant_compases)
             i += 1
 
         return True
