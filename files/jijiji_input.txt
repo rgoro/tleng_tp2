@@ -2,30 +2,113 @@
 // Solo de Ji Ji Ji
 // ----------------
 
-#tempo negra 120
+#tempo negra 90
 #compas 4/4
 
 const oct1 = 5;
 const oct2 = 6;
 
 // Instrumentos
+const piano = 0;
 const violin = 42;
 
-voz (violin)
+voz (piano)
 {
 	compas
 	{
-		nota(la, oct1, semicorchea);
-		nota(la, oct1, semicorchea);
-		nota(la, oct1, semicorchea);
+		// Este crescendo puede pasar a la bata sii la implemento
+		//nota(la, oct1, semicorchea);
+		//nota(la, oct1, semicorchea);
+		//nota(la, oct1, semicorchea);
+		//nota(la, oct1, semicorchea);
+
+		//nota(la, oct1, semicorchea);
+		//nota(la, oct1, semicorchea);
+		//nota(la, oct1, semicorchea);
+		//nota(la, oct1, semicorchea);
+
+		//nota(la, oct1, semicorchea);
+		silencio(negra);
+		silencio(negra);
+		silencio(corchea);
+		silencio(semicorchea);
 		nota(la, oct1, semicorchea);
 
-		nota(la, oct1, semicorchea);
-		nota(la, oct1, semicorchea);
-		nota(la, oct1, semicorchea);
-		nota(la, oct1, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+	}
 
-		nota(la, oct1, semicorchea);
+	compas
+	{
+		nota(sol, oct2, semicorchea);
+		nota(la, oct2, corchea);
+		nota(la, oct2, corchea);
+
+		nota(sol, oct2, corchea);
+		nota(fa, oct2, corchea);
+
+		nota(mi, oct2, corchea);
+		nota(re, oct2, corchea);
+		//nota(re, oct2, corchea);
+		nota(re, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+	}
+
+	compas
+	{
+		nota(re, oct2, semicorchea);
+		nota(do+, oct2, corchea);
+		nota(do+, oct2, corchea);	
+
+		nota(re, oct2, corchea);
+		nota(mi, oct2, corchea);
+		silencio(corchea.);
+
+		silencio(semicorchea);
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+	}
+
+	compas
+	{
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+
+		nota(mi, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+	}
+
+	compas
+	{
+		silencio(semicorchea);
+		nota(do+, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(do, oct2, semicorchea);
+
+		nota(re, oct2, semicorchea);
 		silencio(semicorchea);
 		silencio(semicorchea);
 		nota(la, oct1, semicorchea);
@@ -40,21 +123,75 @@ voz (violin)
 	{
 		nota(sol, oct2, semicorchea);
 		nota(la, oct2, corchea);
-		nota(la, oct2, semicorchea.);
-		silencio(fusa);
+		nota(la, oct2, corchea);
 
-		// Acá hay un tresillo y no se qué onda
-		nota(sol, oct2, fusa);
-		nota(la, oct2, fusa);
-		nota(sol, oct2, fusa); // Esto en la part. es una corchea, fin del tresillo
-		nota(la, oct2, fusa);
-		//nota(sol, oct2, fusa);
-		nota(sol, oct2, fusa);
+		nota(sol, oct2, corchea);
 		nota(fa, oct2, corchea);
-		nota(re, oct2, corchea);
 
-		nota(do, oct2, negra);
-		nota(do, oct2, semicorchea);
+		nota(mi, oct2, corchea);
+		nota(re, oct2, corchea);
+		//nota(re, oct2, corchea);
+		nota(re, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
 	}
+
+	compas
+	{
+		nota(re, oct2, semicorchea);
+		nota(do+, oct2, corchea);
+		nota(do+, oct2, corchea);
+
+		nota(re, oct2, corchea);
+		nota(mi, oct2, corchea);
+		silencio(corchea.);
+
+		silencio(semicorchea);
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+	}
+
+	compas
+	{
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+
+		nota(mi, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+
+		nota(sol, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+	}
+	
+	compas
+	{
+		silencio(semicorchea);
+		nota(do+, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+
+		nota(fa, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(re, oct2, semicorchea);
+		nota(do, oct2, semicorchea);
+
+		nota(re, oct2, corchea);
+		silencio(corchea);
+
+		silencio(negra);
+	}
+
 }
 
