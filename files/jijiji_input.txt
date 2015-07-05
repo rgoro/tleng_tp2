@@ -12,7 +12,7 @@ const oct2 = 6;
 const piano = 0;
 const violin = 42;
 
-voz (piano)
+voz (violin)
 {
 	compas
 	{
