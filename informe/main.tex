@@ -1,0 +1,109 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Informe TL}
+\date{Julio 2015}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{caratula}
+\usepackage[spanish]{babel}
+
+\begin{document}
+
+\newcommand{\num}{\textit{\textbf{num}}}
+\newcommand{\var}{\textit{\textbf{var}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%			INICIO DE CARÁTULA			%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\include{caratula}
+
+\materia{Teor\'ia de Lenguajes}
+\submateria{Primer Cuatrimestre de 2015}
+\titulo{Trabajo Práctico 2}
+
+\grupo{Grupo Estado Final}
+\integrante{Gorojovsky, Román}{530/02}{rgorojovsky@gmail.com}
+\integrante{Lazzaro, Leonardo}{147/05}{lazzaroleonardo@gmail.com}
+
+\begin{titlepage}
+\maketitle
+\thispagestyle{empty}
+\end{titlepage} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				FIN DE CARÁTULA			%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Introducción}
+El trabajo consiste en implementar un programa que tome un archivo escrito en el lenguaje Musilen,
+definido por la cátedra, y convertirlo en un archivo midi, pasando por un lenguaje intermedio que es
+interpretado por el programa \emph{midicomp} para generar finalmente el archivo midi.
+
+El problema, entonces puede dividirse en tres subproblemas: 
+
+\begin{itemize}
+	\item Convertir la descripción del lenguaje Musilen en una gramática bien definida.
+	\item Aprender a usar alguna biblioteca preexistente para convertir esa gramática en código
+	\item Convertir la salida del \emph{parser} creado en los dos pasos anteriores en el lenguaje de
+		\emph{midicomp}
+\end{itemize}
+
+\section*{Decisiones tomadas}
+Se eligió usar \emph{PLY} debido a nuestro mejor manejo del lenguaje \emph{Python} y se usó como
+esqueleto del trabajo el código presentado en clase:
+
+\begin{itemize}
+	\item \texttt{lexer\_rules.py} contiene las definiciones y reglas de tokens
+	\item \texttt{lexer.py} es el código de ejecución del \emph{lexer} (usado principalmente para
+		testeo.
+	\item \texttt{parser\_rules} contiene la definición de la gramática
+	\item \texttt{expressions.py} contiene los objetos que se crean a partir del análisis sintáctico.
+	\item \texttt{parser.py} es el código de ejecución del \emph{parser}
+\end{itemize}
+
+Como se verá en la sección que detalla la implementación, la conversión de objetos al lenguaje
+\emph{midicomp} está implementada dentro de los objetos de \texttt{expressions.py}, usando patrones
+de programación orientada a objetos.
+
+\pagebreak
+\section*{Gramática}
+Se define la siguiente gramática, para cuya definición se priorizó la simplicidad en la construcción
+de los objetos que luego se usarán para generar el archivo \emph{midicomp} por sobre la legibilidad
+de la gramática.  Notamos en negrita los tokens y en negrita bastardilla los tokens con algún valor,
+definidos más abajo.  $\\$
+
+\fbox{
+	\begin{minipage}{30em}
+		Musilen $\rightarrow$ DefTempo DefCompas Constantes Voces\\
+		DefTempo $\rightarrow$ \textbf{\#tempo} Duracion \num\\
+		DefCompas $\rightarrow$ \textbf{\#compas} \num\textbf{/}\num\\
+		Constantes $\rightarrow$ $\lambda$ $|$ constante \textbf{;} constantes\\
+		Constante $\rightarrow$ \textbf{const} \textit{\textbf{constante}} \textbf{=} \num\\
+		Voces $\rightarrow$ Voz \textbf{\}} $|$ Voz \textbf{\}} Voces\\
+		Voz $\rightarrow$ \textbf{Voz (} \var \textbf{) \}} ListaCompases\\
+		ListaCompases $\rightarrow$ ListaCompases CompORepe\\
+		CopmORepe $\rightarrow$ Compases $|$ Repetir
+		Repetir $\rightarrow$ \textbf{repetir (} \num \textbf{) \{} Compases \textbf{\}}\\
+		Compases $\rightarrow$ Compas \textbf{\}} $|$ Compas \textbf{\}} Compases\\
+		Compas $\rightarrow$ \textbf{compas \{} Figuras\\
+		Figuras $\rightarrow$ Figura \textbf{;} $|$ Figura \textbf{;} Figuras\\
+		Figura $\rightarrow$ Nota $|$ Silencio\\
+		Nota $\rightarrow$ \textbf{nota (} \textit{\textbf{altura}}\textbf{,} \var \textbf{,} \textit{\textbf{duracion}} \textbf{)}\\
+		
+	\end{minipage}
+}
+
+La gramática que se implementa en \texttt{parser\_rules.py} tiene una pequeña diferencia con
+esta: no existe el no terminal ``ComoORepe'', que se agregó acá para simplificar la lectura, pero
+está implementado directamente en la lista de compases.
+
+\section*{Implementación}
+\section*{Uso del programa}
+\section*{Tests y ejemplos}
+
+
+\end{document}
