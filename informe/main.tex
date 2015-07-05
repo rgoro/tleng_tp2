@@ -12,7 +12,7 @@
 \begin{document}
 
 \newcommand{\num}{\textit{\textbf{num}}}
-\newcommand{\var}{\textit{\textbf{var}}}
+\newcommand{\var}{\textit{\textbf{constante}}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,29 +73,48 @@ de programación orientada a objetos.
 \section*{Gramática}
 Se define la siguiente gramática, para cuya definición se priorizó la simplicidad en la construcción
 de los objetos que luego se usarán para generar el archivo \emph{midicomp} por sobre la legibilidad
-de la gramática.  Notamos en negrita los tokens y en negrita bastardilla los tokens con algún valor,
-definidos más abajo.  $\\$
+de la gramática. En general se pusieron los terminales (puntos y coma, llaves de cierre) en las
+producciones ``de más afuera''.
+
+Notamos en negrita los tokens y en negrita bastardilla los tokens con algún valor,
+definidos más abajo.
+$\\$
 
 \fbox{
-	\begin{minipage}{30em}
+	\begin{minipage}{33em}
 		Musilen $\rightarrow$ DefTempo DefCompas Constantes Voces\\
 		DefTempo $\rightarrow$ \textbf{\#tempo} Duracion \num\\
 		DefCompas $\rightarrow$ \textbf{\#compas} \num\textbf{/}\num\\
 		Constantes $\rightarrow$ $\lambda$ $|$ constante \textbf{;} constantes\\
-		Constante $\rightarrow$ \textbf{const} \textit{\textbf{constante}} \textbf{=} \num\\
+		Constante $\rightarrow$ \textbf{const} \var \textbf{ =} \num\\
 		Voces $\rightarrow$ Voz \textbf{\}} $|$ Voz \textbf{\}} Voces\\
-		Voz $\rightarrow$ \textbf{Voz (} \var \textbf{) \}} ListaCompases\\
+		Voz $\rightarrow$ \textbf{Voz (}Var\textbf{) \}} ListaCompases\\
 		ListaCompases $\rightarrow$ ListaCompases CompORepe\\
-		CopmORepe $\rightarrow$ Compases $|$ Repetir
-		Repetir $\rightarrow$ \textbf{repetir (} \num \textbf{) \{} Compases \textbf{\}}\\
+		CopmORepe $\rightarrow$ Compases $|$ Repetir\\
+		Repetir $\rightarrow$ \textbf{repetir (}\num \textbf{) \{} Compases \textbf{\}}\\
 		Compases $\rightarrow$ Compas \textbf{\}} $|$ Compas \textbf{\}} Compases\\
 		Compas $\rightarrow$ \textbf{compas \{} Figuras\\
 		Figuras $\rightarrow$ Figura \textbf{;} $|$ Figura \textbf{;} Figuras\\
 		Figura $\rightarrow$ Nota $|$ Silencio\\
-		Nota $\rightarrow$ \textbf{nota (} \textit{\textbf{altura}}\textbf{,} \var \textbf{,} \textit{\textbf{duracion}} \textbf{)}\\
-		
+		Nota $\rightarrow$ \textbf{nota (}\textit{\textbf{altura}}\textbf{,} Var\textbf{,} \textit{\textbf{duracion}}\textbf{)}\\
+		Silencio $\rightarrow$ \textbf{silencio (}\textit{\textbf{duracion}}\textbf{)}\\
+		Var $\rightarrow$ \var $|$ \num
 	\end{minipage}
 }
+
+$\\$
+Los tokens con valor son:\\
+
+\fbox{
+	\begin{minipage}{33em}
+		\textit{\textbf{num}} = 0$|$[1-9][0-9]*\\
+		\textit{\textbf{duracion}} = (redonda$|$blanca$|$negra$|$corchea$|$semicorchea$|$fusa$|$semifusa)(.)?\\
+		\textit{\textbf{altura}} = (do$|$re$|$mi$|$fa$|$sol$|$la$|$si)(-$|$+)?\\
+		\textit{\textbf{constante}} = [a-zA-Z]+
+	\end{minipage}
+}
+
+$\\$
 
 La gramática que se implementa en \texttt{parser\_rules.py} tiene una pequeña diferencia con
 esta: no existe el no terminal ``ComoORepe'', que se agregó acá para simplificar la lectura, pero
