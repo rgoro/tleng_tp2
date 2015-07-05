@@ -1,5 +1,5 @@
 // ----------------
-// Solo de Ji Ji Ji
+// Solo de Ji Ji Ji (que todos lo pensamos como solo de saxo, pero en Oktubre lo hace la viola)
 // ----------------
 
 #tempo negra 90
@@ -9,10 +9,9 @@ const oct1 = 5;
 const oct2 = 6;
 
 // Instrumentos
-const piano = 0;
-const violin = 42;
+const tenor = 67;
 
-voz (violin)
+voz (tenor)
 {
 	compas
 	{
