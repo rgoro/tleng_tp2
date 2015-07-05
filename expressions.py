@@ -253,7 +253,7 @@ class MusiLen(object):
         for voz in self.voces:
             if voz.instrumento in self.constantes.keys():
                 voz.instrumento = self.constantes[voz.instrumento]
-            elif not voz.instrumento.isdigit():
+            elif type(voz.instrumento) != int:
                 raise Exception("Constante «{0}» indefinida".format(voz.instrumento))
 
             for compas in voz.compases:
@@ -261,7 +261,7 @@ class MusiLen(object):
                     if type(figura) == Nota:
                         if figura.octava in self.constantes.keys():
                             figura.octava = self.constantes[figura.octava]
-                        elif not figura.octava.isdigit():
+                        elif type(figura.octava) != int :
                             raise Exception("Constante «{0}» indefinida".format(figura.octava))
 
             

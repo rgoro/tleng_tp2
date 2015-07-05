@@ -42,8 +42,6 @@ def p_voz(sub):
     'voz : VOZ PAREN_L var PAREN_R LLAVE_L lista_compases'
     sub[0] = Voz(sub[3], sub[6])
 
-                      #| lista_compases compases
-                      #| lista_compases repetir'''
 def p_lista_compases(sub):
     '''lista_compases : compases
                       | repetir
@@ -66,7 +64,7 @@ def p_compases(sub):
 def p_repetir(sub):
     'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases LLAVE_R'
     sub[0] = []
-    for i in range(int(sub[3])):
+    for i in range(sub[3]):
         sub[0] += sub[6]
 
 def p_compas(sub):
