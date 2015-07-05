@@ -23,7 +23,10 @@ def p_constantes(sub):
         sub[0] = []
     else:
         sub[0] = sub[3]
-        sub[0].insert(0, sub[1])
+        if sub[1][0] not in [x for (x, y) in sub[0]]:
+            sub[0].insert(0, sub[1])
+        else:
+            raise Exception("Constante {0} definida dos veces".format(sub[1][0]))
 
 def p_constante(sub):
     'constante : CONST CONSTANTE IGUAL num'

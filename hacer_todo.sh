@@ -31,3 +31,5 @@ echo "erroneo_8"
 ./hacer_midi.sh erroneo_8
 echo "erroneo_9"
 ./hacer_midi.sh erroneo_9
+echo "erroneo_10"
+./hacer_midi.sh erroneo_10
