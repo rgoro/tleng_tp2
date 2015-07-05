@@ -233,8 +233,6 @@ class Musileng(object):
         for v in self.voces:
             v.validar(i, self.def_compas, cant_compases)
             i += 1
-            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
-                i += 1
 
         return True
 
@@ -246,6 +244,8 @@ class Musileng(object):
         for voz in self.voces:
             midicomp += voz.get_midicomp(str(i), clicks_por_redonda, self.def_compas.tiempos)
             i += 1
+            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
+                i += 1
 
         return midicomp
 
