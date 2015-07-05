@@ -5,8 +5,8 @@ from lexer_rules import tokens
 from expressions import *
 
 def p_musilen(sub):
-    'musilen : def_tempo def_compas constantes voces'
-    sub[0] = MusiLen(sub[1], sub[2], sub[3], sub[4])
+    'musileng : def_tempo def_compas constantes voces'
+    sub[0] = Musileng(sub[1], sub[2], sub[3], sub[4])
 
 def p_def_tempo(sub):
     'def_tempo : DEF_TEMPO DURACION num'

@@ -199,8 +199,6 @@ class Voz(object):
         for c in self.compases:
             c.validar(nro_voz, i, def_compas)
             i += 1
-            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
-                i += 1
 
     def get_midicomp(self, id, clicks_por_redonda, pulsos_por_compas):
         midicomp = "MTrk\n"
@@ -220,7 +218,7 @@ class Voz(object):
     def __repr__(self):
         return str(self.instrumento) + ": " + str(self.compases)
 
-class MusiLen(object):
+class Musileng(object):
     def __init__(self, def_tempo, def_compas, constantes, voces):
         self.def_tempo = def_tempo
         self.def_compas = def_compas
@@ -235,6 +233,8 @@ class MusiLen(object):
         for v in self.voces:
             v.validar(i, self.def_compas, cant_compases)
             i += 1
+            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
+                i += 1
 
         return True
 
