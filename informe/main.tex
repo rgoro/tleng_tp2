@@ -53,7 +53,7 @@ El problema, entonces puede dividirse en tres subproblemas:
 \end{itemize}
 
 \section*{Decisiones tomadas}
-Se eligió usar \emph{PLY} debido a nuestro mejor manejo del lenguaje \emph{Python} y se usó como
+Eligimos usar \emph{PLY} debido a nuestro mejor manejo del lenguaje \emph{Python} y usamos como
 esqueleto del trabajo el código presentado en clase:
 
 \begin{itemize}
@@ -71,9 +71,9 @@ de programación orientada a objetos.
 
 \pagebreak
 \section*{Gramática}
-Se define la siguiente gramática, para cuya definición se priorizó la simplicidad en la construcción
+Definimos la siguiente gramática, para cuya definición priorizamos la simplicidad en la construcción
 de los objetos que luego se usarán para generar el archivo \emph{midicomp} por sobre la legibilidad
-de la gramática. En general se pusieron los terminales (puntos y coma, llaves de cierre) en las
+de la gramática. En general pusimos los terminales (puntos y coma, llaves de cierre) en las
 producciones ``de más afuera''.
 
 Notamos en negrita los tokens y en negrita bastardilla los tokens con algún valor,
@@ -130,7 +130,7 @@ Un archivo parseado queda en un objeto \texttt{Musileng} que es una tupla \textt
 DefCompas, [Constantes] [Voces])}, y que se crea al reconocer la primer producción.
 \texttt{DefTempo} y \texttt{DefCompas} tienen la información correspondiente a las siguientes dos
 producciones; las constantes se toman como una lista de \texttt{(nombre, valor)} y se convierten en
-un diccionario en el moment de construír el \texttt{Musileng}; y finalmente viene la lista de voces
+un diccionario en el momento de construír el \texttt{Musileng}; y finalmente viene la lista de voces
 con el resto de la información.
 
 Una voz, representada en la clase \texttt{Voz}, consiste en la identificación del instrumento y una
@@ -158,7 +158,7 @@ duración numérica: 1 para las redondas, 1/2 para las blancas, 1/4 para las neg
 multiplicado por 1.5 en caso de haber puntillo.  El \texttt{Compas} levana una excepción si la suma
 es mayor o menor a lo esperado.
 
-\footnotetext[1]{Se implementó la verificación de que todas las voces tengan la misma cantidad de
+\footnotetext[1]{Implementamos la verificación de que todas las voces tengan la misma cantidad de
 	compases, pero dado que uno de los ejemplos de la cátedra viola esta regla, la verificación
 	quedó comentada}
 
@@ -174,8 +174,8 @@ De esta información, lo único que usa \texttt{Voz} es el id, para escribir el 
 datos, los pasa hacia cada uno de sus compases, junto con un nro. de compás, también generado
 secuencialmente.  Cada compás genera su midicomp y este se va anexando al de la voz.
 
-\footnotetext[2]{Con respecto a la percusión sólo se tuvo este cuidado de no generar una pista 10.
-	No se implementó nada especial para manejar voces de percusión ni se implementaron ejemplos con
+\footnotetext[2]{Con respecto a la percusión sólo tuvimos este cuidado de no generar una pista 10.
+	No hay implementado nada especial para manejar voces de percusión ni presentamos ejemplos con
 	percusión}
 
 La clase \texttt{Compas} debe mantener, además del \emph{string} con el texto generado, el pulso y
@@ -204,10 +204,73 @@ una primer versión de esta conversión los objetos \texttt{Silencio} solamente 
 clicks, generando un \texttt{string} vacío, pero fue necesario cambiar esto para para la
 implementación de uno de los ejemplos, como se verá dos secciones más adelante.
 
-\section*{Uso del programa}
-
-
 \section*{Tests y ejemplos}
+El \emph{testing} del programa es a tres niveles: para el \emph{lexer} usamos un \emph{unit test} que
+verifica que cada token se reconozca correctamente.  En este nivel no hubo demasiadas
+dificultades, tan solo algunos temas de precedencia que llevaban a que, por ejemplo, ``redonda''
+fuera interpretado como ``Altura: re, Altura: do, Constante: nda'' en vez de como ``Duracion:
+redonda''.
 
+Para el parser encontramos que era muy difícil aislar cada posible producción, por lo que recurrimos
+a tests del sistema completo, es decir ejemplos. Estos están en el directorio \texttt{files}, y son
+los cuatro ejemplos de la cátedra, doce ejemplos de archivos con errores y tres ejemplos correctos.
+Todos los archivos siguen el formato de los de la cátedra: \texttt{<titulo>\_input.txt}.
+
+Los ejemplos erróneos están nombrados \texttt{erroneo\_\$i} con \texttt{\$i} del 1 al 12 y son:
+
+\begin{enumerate}
+	\item Constante definida dos veces
+	\item Repetir vacío
+	\item Repetir con N = 0
+	\item Sin definición de \emph{tempo}
+	\item Sin definición de compas
+	\item Con una constante indefinida
+	\item Sin voces
+	\item Con una voz vacía
+	\item Con un compás vacío
+	\item Falta un ; en una figura
+	\item Un compás es demasiado corto
+	\item Un compás es demasiado largo
+\end{enumerate}
+
+Todos producen un error a nivel sintáctico o semántico (en los métodos \texttt{validar()}). El
+mensaje que corresponde a los primeros intenta informar las posibles causas semánticas de la falla
+que reporta el parser.
+
+En cuanto a los ejemplos correctos, hay que empezar por decir que nuestro conocimiento de escritura
+musical es limitado, apenas superior a lo explicado en el enunciado: Unos rudimentarios
+conocimientos de rítmica, la capacidad de saber qué altura es cuál si contamos las partituras y
+renglones y una ligera sospecha de algunos otros elementos.  Con esas armas nos arriesgamos a
+implementar algunos ejemplos a partir de partituras buscadas en internet.
+
+La elección del primer ejemplo a implementar nos resultó tan obvia a nosotros como a quienes nos
+conocen: el solo de \emph{Ji Ji Ji}, de Patricio Rey y sus Redonditos de Ricota, que todos atribuímos al
+saxo, y sin embargo en el disco está grabado con la guitarra.  Tuvimos que adaptar y corregir la
+partitura que encontramos, hasta lograr que sonara más o menos parecida a lo que escuchábamos en el
+disco.  El ejemplo aparece titulado \texttt{jijiji}
+
+El sigiente ejemplo es un fragmento de otro clásico de nuestro rock: el \emph{riff} de
+\emph{Post Crucifixión} de Pescado Rabioso.  Aquí nos encontramos con una limitación de
+\emph{Musileng}, ya que el cierre del fragmento contiene dos \emph{síncopas}: notas que empiezan en
+un compás y terminan en otro, y esto en el lenguaje no se puede implementar.  Lo emparchamos
+definiendo los compases como $\frac{12}{8}$ en vez de la correcta $\frac{6}{8}$, con lo que una de las
+síncopas queda dentro del compás, aunque la última resulta insalvable.  Este ejemplo se titula
+\texttt{post\_crucifixion\_riff}.
+
+Por último se adaptó sin demasiadas dificultades la pieza \emph{4:33} del compositor
+contemporáneo John Cage.  Fue para lograr que este ejemplo quede correcto que se modificó la
+conversión de los \texttt{Silencio} a \texttt{midicomp} para que escriba todos los tiempos, pues de
+otra manera la pieza no tenía la duración correcta.
+
+\section*{Uso del programa}
+El ejecutable principal es el script \texttt{musileng}, que implementa la interfaz definida en el
+enunciado.  Para simplificar el testeo implementamos un script \texttt{hacer\_midi.sh} que recibe el
+título de un ejemplo, intenta generar el \texttt{midicomp} y, si lo logra, genera el midi y lo deja
+en el directorio \texttt{midi}, como \texttt{<titulo>.mid}.  Opcionalmente puede pasársele un
+\texttt{-p} para reproducir el midi generado.  Dentro del script se define qué programa se usa para
+cada uno de estos pasos, en particular, usamos \emph{wildmidi} para la reproducción.
+
+Hay un script extra, \texttt{hacer\_todo.sh} que ejecuta el script anterior para todos los ejemplos
+definidos, escribiendo en pantalla, para los ejemplos erróneos, qué error se estaría probando.
 
 \end{document}
