@@ -10,13 +10,11 @@ FILE_IN=$FILES_DIR/$ROOT$IN_SUFFIX
 FILE_OUT=$ROOT$OUT_SUFFIX
 FILE_MIDI=$MIDI_DIR/$ROOT.mid
 
-PARSER=./parser.py
+MUSILENG=./musileng
 MIDICOMP='midicomp -c'
 PMIDI=wildmidi
 
-#echo "$FILE_IN > $FILE_OUT > $FILE_MIDI"
-
-$PARSER $FILE_IN > $FILE_OUT
+$MUSILENG $FILE_IN $FILE_OUT
 
 if [ $? -eq 0 ]; then
 	$MIDICOMP $FILE_OUT $FILE_MIDI
@@ -29,7 +27,6 @@ if [ $? -eq 0 ]; then
 		fi
 	fi
 else
-	cat $FILE_OUT
 	echo "Falló"
 fi
 
