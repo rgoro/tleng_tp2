@@ -17,10 +17,10 @@ def p_def_compas(sub):
     sub[0] = DefCompas(sub[2], sub[4])
 
 def p_constantes(sub):
-    '''constantes : constante PUNTO_Y_COMA
+    '''constantes : empty
                   | constante PUNTO_Y_COMA constantes'''
-    if len(sub) == 3:
-        sub[0] = [sub[1]]
+    if len(sub) == 2:
+        sub[0] = []
     else:
         sub[0] = sub[3]
         sub[0].insert(0, sub[1])
@@ -108,6 +108,23 @@ def p_label(sub):
     'label : CONSTANTE'
     sub[0] = sub[1]
 
-#def p_error(sub):
-#    raise Exception("Syntax error.")
+def p_empty(p):
+    'empty :'
+    pass
+
+def p_error(sub):
+    if sub is None:
+        raise Exception("EOF inesperado. ¿No hay voces?")
+    else:
+        message = "Error de sintáxis en la línea {0}, no esperaba un token «{1}».".format(sub.lineno, sub.type)
+        if sub.type == "DEF_COMPAS":
+            message += "\nProbablemente faltó el #tempo."
+        elif sub.type == "CONST":
+            message += "\nProbablemente faltó o el #compas o el ; de una constante."
+        elif sub.type == "LLAVE_R":
+            message += "\nO falta un ; en una figura o hay algo (voz, repetir o compás) vacío."
+        elif sub.type == "NOTA" or sub.type == "SILENCIO":
+            message = "Error de sintáxis en la línea {0}, falta un ; en una figura.".format(sub.lineno)
+
+        raise Exception(message)
 
