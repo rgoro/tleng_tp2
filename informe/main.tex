@@ -59,8 +59,8 @@ esqueleto del trabajo el código presentado en clase:
 \begin{itemize}
 	\item \texttt{lexer\_rules.py} contiene las definiciones y reglas de tokens
 	\item \texttt{lexer.py} es el código de ejecución del \emph{lexer} (usado principalmente para
-		testeo.
-	\item \texttt{parser\_rules} contiene la definición de la gramática
+		testeo.)
+	\item \texttt{parser\_rulesi.py} contiene la definición de la gramática
 	\item \texttt{expressions.py} contiene los objetos que se crean a partir del análisis sintáctico.
 	\item \texttt{parser.py} es el código de ejecución del \emph{parser}
 \end{itemize}
@@ -90,7 +90,7 @@ $\\$
 		Voces $\rightarrow$ Voz \textbf{\}} $|$ Voz \textbf{\}} Voces\\
 		Voz $\rightarrow$ \textbf{Voz (}Var\textbf{) \}} ListaCompases\\
 		ListaCompases $\rightarrow$ ListaCompases CompORepe\\
-		CopmORepe $\rightarrow$ Compases $|$ Repetir\\
+		CompORepe $\rightarrow$ Compases $|$ Repetir\\
 		Repetir $\rightarrow$ \textbf{repetir (}\num \textbf{) \{} Compases \textbf{\}}\\
 		Compases $\rightarrow$ Compas \textbf{\}} $|$ Compas \textbf{\}} Compases\\
 		Compas $\rightarrow$ \textbf{compas \{} Figuras\\
@@ -117,7 +117,7 @@ Los tokens con valor son:\\
 $\\$
 
 La gramática que se implementa en \texttt{parser\_rules.py} tiene una pequeña diferencia con
-esta: no existe el no terminal ``ComoORepe'', que se agregó acá para simplificar la lectura, pero
+esta: no existe el no terminal ``CompORepe'', que se agregó acá para simplificar la lectura, pero
 está implementado directamente en la lista de compases.
 
 \section*{Implementación}
@@ -247,7 +247,7 @@ La elección del primer ejemplo a implementar nos resultó tan obvia a nosotros 
 conocen: el solo de \emph{Ji Ji Ji}, de Patricio Rey y sus Redonditos de Ricota, que todos atribuímos al
 saxo, y sin embargo en el disco está grabado con la guitarra.  Tuvimos que adaptar y corregir la
 partitura que encontramos, hasta lograr que sonara más o menos parecida a lo que escuchábamos en el
-disco.  El ejemplo aparece titulado \texttt{jijiji}
+disco.  El ejemplo aparece titulado \texttt{jijiji}.
 
 El sigiente ejemplo es un fragmento de otro clásico de nuestro rock: el \emph{riff} de
 \emph{Post Crucifixión} de Pescado Rabioso.  Aquí nos encontramos con una limitación de
