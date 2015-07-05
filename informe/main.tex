@@ -126,14 +126,12 @@ El lenguaje se representa con una combinación de objetos y listas de estos obje
 más adelante, estos objetos tienen métodos para la validación semántica del archivo y para la
 conversión a \emph{midicomp}.
 
-Un archivo parseado queda en un objeto \texttt{Musileng}\footnotemark[1] que es una tupla \texttt{(DefTempo,
+Un archivo parseado queda en un objeto \texttt{Musileng} que es una tupla \texttt{(DefTempo,
 DefCompas, [Constantes] [Voces])}, y que se crea al reconocer la primer producción.
 \texttt{DefTempo} y \texttt{DefCompas} tienen la información correspondiente a las siguientes dos
 producciones; las constantes se toman como una lista de \texttt{(nombre, valor)} y se convierten en
 un diccionario en el moment de construír el \texttt{Musileng}; y finalmente viene la lista de voces
 con el resto de la información.
-
-\
 
 Una voz, representada en la clase \texttt{Voz}, consiste en la identificación del instrumento y una
 lista de compases.  Los \texttt{repetir (N)} se implementan en el momento del parseo (en
@@ -141,7 +139,7 @@ lista de compases.  Los \texttt{repetir (N)} se implementan en el momento del pa
 compases.  Cada \texttt{Compas} consiste en una lista de objetos \texttt{Figura}, que pueden ser
 de la subclase \texttt{Nota} o \texttt{Silencio}.
 
-Para definir las figuras (y también para las definiciones de los compases y del tempo) hay dos
+Para definir las figuras (y también para las definiciones de los compases y del \emph{tempo}) hay dos
 clases: \texttt{Duracion} y \texttt{Altura}, que representan respectivamente el ritmo (redonda,
 blanca, negra, con o sin puntillo, etc.) y la altura (do, re, mi, sostenido, bemol, etc.) de cada
 figura.  Obviamente los silencios sólo tienen duración.
@@ -150,7 +148,7 @@ figura.  Obviamente los silencios sólo tienen duración.
 La validación de la ``partitura'' se hace en forma \emph{top-down} llamando a una colección de
 métodos \texttt{validar} que levantan una excepción con un mensaje (bastante) descriptivo cuando
 detectan un error.  En la clase \texttt{Musileng}, se llama al \texttt{validar()} de cada una de las
-voces, pasándoles la definición del compás esperado\footnotemark[2], más un número de voz, usado
+voces, pasándoles la definición del compás esperado\footnotemark[1], más un número de voz, usado
 para los mensajes de error.  Este método hace el pasamanos de esta información, más un número de
 compás, también para los mensajes de error.
 
@@ -160,15 +158,54 @@ duración numérica: 1 para las redondas, 1/2 para las blancas, 1/4 para las neg
 multiplicado por 1.5 en caso de haber puntillo.  El \texttt{Compas} levana una excepción si la suma
 es mayor o menor a lo esperado.
 
-\footnotetext[2]{Se implementó la verificación de que todas las voces tengan la misma cantidad de
+\footnotetext[1]{Se implementó la verificación de que todas las voces tengan la misma cantidad de
 	compases, pero dado que uno de los ejemplos de la cátedra viola esta regla, la verificación
 	quedó comentada}
 
 \subsection*{Conversión a formato \emph{midicomp}}
 Una vez más, la implementación de esta tarea queda repartida en diversas clases, en las funciones
-\texttt{get\_midicomp()}.  La clase \texttt{Musileng} lo único que sabe hacer es escribir el header
+\texttt{get\_midicomp()}.  La clase \texttt{Musileng} lo único que sabe hacer es escribir el header,
+pidiéndole la definición del \emph{tempo} en clicks a \texttt{DefTempo}, que implementa la fórmula
+del enunciado.  Luego se van anexando los resultados del \texttt{get\_midicomp()} de cada voz.
+
+Los objetos \texttt{Voz} reciben su id (un número asignado secuencialmente, salteando el
+10\footnotemark[2]), los clicks por redonda, calculados según el enunciado y los pulsos por compás.
+De esta información, lo único que usa \texttt{Voz} es el id, para escribir el header.  Los demás
+datos, los pasa hacia cada uno de sus compases, junto con un nro. de compás, también generado
+secuencialmente.  Cada compás genera su midicomp y este se va anexando al de la voz.
+
+\footnotetext[2]{Con respecto a la percusión sólo se tuvo este cuidado de no generar una pista 10.
+	No se implementó nada especial para manejar voces de percusión ni se implementaron ejemplos con
+	percusión}
+
+La clase \texttt{Compas} debe mantener, además del \emph{string} con el texto generado, el pulso y
+click actual dentro del compás.  Para esto la clase \texttt{Figura} recibe en su
+\texttt{get\_midicomp()} el pulso y click actual, además de los clicks por redonda y pulsos por
+compás definidos ``arriba'' en \texttt{Musileng}.  A partir de estos datos, cada \texttt{Figura},
+sabe dónde empieza y puede calcular dónde termina: primero se calcula el total de clicks que ocupará
+la figura en función de su duración y los clicks por redonda; a partir de este valor, el pulso donde
+termina la nota es 
+
+$$
+pulso_{final} = pulso_{inicial} + \lceil clicks_{total} / clicks\_por\_pulso \rceil
+$$
+\noindent
+y el click es 
+$$
+clicks_{final} = clicks_{total} \% clicks\_por\_pulso
+$$ 
+\noindent
+donde $clicks\_por\_pulso = 384$.
+
+Se hace la excepción de que si $pulso_{final}$ = $pulsos\_por\_compas$, se escribe que la figura
+finaliza en el 00:000 del siguiente compás.  El midicomp de cada figura se completa con la altura
+correspondiente a cada nota y el volúmen, 70 en el caso de las notas y 0 en el de los silencios.  En
+una primer versión de esta conversión los objetos \texttt{Silencio} solamente avanzaban pulsos y
+clicks, generando un \texttt{string} vacío, pero fue necesario cambiar esto para para la
+implementación de uno de los ejemplos, como se verá dos secciones más adelante.
 
 \section*{Uso del programa}
+
 
 \section*{Tests y ejemplos}
 
