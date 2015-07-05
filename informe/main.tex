@@ -39,14 +39,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Introducción}
-El trabajo consiste en implementar un programa que tome un archivo escrito en el lenguaje Musilen,
+El trabajo consiste en implementar un programa que tome un archivo escrito en el lenguaje Musileng,
 definido por la cátedra, y convertirlo en un archivo midi, pasando por un lenguaje intermedio que es
 interpretado por el programa \emph{midicomp} para generar finalmente el archivo midi.
 
 El problema, entonces puede dividirse en tres subproblemas: 
 
 \begin{itemize}
-	\item Convertir la descripción del lenguaje Musilen en una gramática bien definida.
+	\item Convertir la descripción del lenguaje Musileng en una gramática bien definida.
 	\item Aprender a usar alguna biblioteca preexistente para convertir esa gramática en código
 	\item Convertir la salida del \emph{parser} creado en los dos pasos anteriores en el lenguaje de
 		\emph{midicomp}
@@ -82,7 +82,7 @@ $\\$
 
 \fbox{
 	\begin{minipage}{33em}
-		Musilen $\rightarrow$ DefTempo DefCompas Constantes Voces\\
+		Musileng $\rightarrow$ DefTempo DefCompas Constantes Voces\\
 		DefTempo $\rightarrow$ \textbf{\#tempo} Duracion \num\\
 		DefCompas $\rightarrow$ \textbf{\#compas} \num\textbf{/}\num\\
 		Constantes $\rightarrow$ $\lambda$ $|$ constante \textbf{;} constantes\\
