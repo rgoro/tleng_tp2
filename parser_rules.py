@@ -26,7 +26,7 @@ def p_constantes(sub):
         sub[0].insert(0, sub[1])
 
 def p_constante(sub):
-    'constante : CONST label IGUAL num'
+    'constante : CONST CONSTANTE IGUAL num'
     sub[0] = (sub[2], sub[4])
 
 def p_voces(sub):
@@ -95,16 +95,12 @@ def p_silencio(sub):
 
 def p_var(sub):
     '''var : num
-           | label'''
+           | CONSTANTE'''
     sub[0] = sub[1]
 
 def p_num(sub):
     'num : NUMERO'
     sub[0] = int(sub[1])
-
-def p_label(sub):
-    'label : CONSTANTE'
-    sub[0] = sub[1]
 
 def p_empty(p):
     'empty :'
