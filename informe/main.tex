@@ -121,7 +121,55 @@ esta: no existe el no terminal ``ComoORepe'', que se agregó acá para simplific
 está implementado directamente en la lista de compases.
 
 \section*{Implementación}
+\subsection*{Estructura}
+El lenguaje se representa con una combinación de objetos y listas de estos objetos.  Como se verá
+más adelante, estos objetos tienen métodos para la validación semántica del archivo y para la
+conversión a \emph{midicomp}.
+
+Un archivo parseado queda en un objeto \texttt{Musileng}\footnotemark[1] que es una tupla \texttt{(DefTempo,
+DefCompas, [Constantes] [Voces])}, y que se crea al reconocer la primer producción.
+\texttt{DefTempo} y \texttt{DefCompas} tienen la información correspondiente a las siguientes dos
+producciones; las constantes se toman como una lista de \texttt{(nombre, valor)} y se convierten en
+un diccionario en el moment de construír el \texttt{Musileng}; y finalmente viene la lista de voces
+con el resto de la información.
+
+\
+
+Una voz, representada en la clase \texttt{Voz}, consiste en la identificación del instrumento y una
+lista de compases.  Los \texttt{repetir (N)} se implementan en el momento del parseo (en
+\texttt{parser\_rules.py} en vez de \texttt{expressions.py}) generando N veces la lista interna de
+compases.  Cada \texttt{Compas} consiste en una lista de objetos \texttt{Figura}, que pueden ser
+de la subclase \texttt{Nota} o \texttt{Silencio}.
+
+Para definir las figuras (y también para las definiciones de los compases y del tempo) hay dos
+clases: \texttt{Duracion} y \texttt{Altura}, que representan respectivamente el ritmo (redonda,
+blanca, negra, con o sin puntillo, etc.) y la altura (do, re, mi, sostenido, bemol, etc.) de cada
+figura.  Obviamente los silencios sólo tienen duración.
+
+\subsection*{Validación}
+La validación de la ``partitura'' se hace en forma \emph{top-down} llamando a una colección de
+métodos \texttt{validar} que levantan una excepción con un mensaje (bastante) descriptivo cuando
+detectan un error.  En la clase \texttt{Musileng}, se llama al \texttt{validar()} de cada una de las
+voces, pasándoles la definición del compás esperado\footnotemark[2], más un número de voz, usado
+para los mensajes de error.  Este método hace el pasamanos de esta información, más un número de
+compás, también para los mensajes de error.
+
+El \texttt{validar()} de cada compás hace la suma de las duraciones de sus figuras y la compara con
+la duración esperada por la definición de compás.  Cada objeto \texttt{Duracion} ``sabe'' cuál es su
+duración numérica: 1 para las redondas, 1/2 para las blancas, 1/4 para las negras, etc.
+multiplicado por 1.5 en caso de haber puntillo.  El \texttt{Compas} levana una excepción si la suma
+es mayor o menor a lo esperado.
+
+\footnotetext[2]{Se implementó la verificación de que todas las voces tengan la misma cantidad de
+	compases, pero dado que uno de los ejemplos de la cátedra viola esta regla, la verificación
+	quedó comentada}
+
+\subsection*{Conversión a formato \emph{midicomp}}
+Una vez más, la implementación de esta tarea queda repartida en diversas clases, en las funciones
+\texttt{get\_midicomp()}.  La clase \texttt{Musileng} lo único que sabe hacer es escribir el header
+
 \section*{Uso del programa}
+
 \section*{Tests y ejemplos}
 
 
