@@ -2,14 +2,17 @@
 \usepackage[utf8]{inputenc}
 
 \title{Informe TL}
+\date{Julio 2015}
 
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{caratula}
 \usepackage[spanish]{babel}
 
-
 \begin{document}
+
+\newcommand{\num}{\textit{\textbf{num}}}
+\newcommand{\var}{\textit{\textbf{constante}}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,11 +28,249 @@
 \grupo{Grupo Estado Final}
 \integrante{Gorojovsky, Román}{530/02}{rgorojovsky@gmail.com}
 \integrante{Lazzaro, Leonardo}{147/05}{lazzaroleonardo@gmail.com}
-\integrante{Montero, Victor}{707/98}{vmontero@dc.uba.ar}
 
 \begin{titlepage}
 \maketitle
 \thispagestyle{empty}
 \end{titlepage} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				FIN DE CARÁTULA			%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Introducción}
+El trabajo consiste en implementar un programa que tome un archivo escrito en el lenguaje Musileng,
+definido por la cátedra, y convertirlo en un archivo midi, pasando por un lenguaje intermedio que es
+interpretado por el programa \emph{midicomp} para generar finalmente el archivo midi.
+
+El problema, entonces puede dividirse en tres subproblemas: 
+
+\begin{itemize}
+	\item Convertir la descripción del lenguaje Musileng en una gramática bien definida.
+	\item Aprender a usar alguna biblioteca preexistente para convertir esa gramática en código
+	\item Convertir la salida del \emph{parser} creado en los dos pasos anteriores en el lenguaje de
+		\emph{midicomp}
+\end{itemize}
+
+\section*{Decisiones tomadas}
+Eligimos usar \emph{PLY} debido a nuestro mejor manejo del lenguaje \emph{Python} y usamos como
+esqueleto del trabajo el código presentado en clase:
+
+\begin{itemize}
+	\item \texttt{lexer\_rules.py} contiene las definiciones y reglas de tokens
+	\item \texttt{lexer.py} es el código de ejecución del \emph{lexer} (usado principalmente para
+		testeo.)
+	\item \texttt{parser\_rulesi.py} contiene la definición de la gramática
+	\item \texttt{expressions.py} contiene los objetos que se crean a partir del análisis sintáctico.
+	\item \texttt{parser.py} es el código de ejecución del \emph{parser}
+\end{itemize}
+
+Como se verá en la sección que detalla la implementación, la conversión de objetos al lenguaje
+\emph{midicomp} está implementada dentro de los objetos de \texttt{expressions.py}, usando patrones
+de programación orientada a objetos.
+
+\pagebreak
+\section*{Gramática}
+Definimos la siguiente gramática, para cuya definición priorizamos la simplicidad en la construcción
+de los objetos que luego se usarán para generar el archivo \emph{midicomp} por sobre la legibilidad
+de la gramática. En general pusimos los terminales (puntos y coma, llaves de cierre) en las
+producciones ``de más afuera''.
+
+Notamos en negrita los tokens y en negrita bastardilla los tokens con algún valor,
+definidos más abajo.
+$\\$
+
+\fbox{
+	\begin{minipage}{33em}
+		Musileng $\rightarrow$ DefTempo DefCompas Constantes Voces\\
+		DefTempo $\rightarrow$ \textbf{\#tempo} Duracion \num\\
+		DefCompas $\rightarrow$ \textbf{\#compas} \num\textbf{/}\num\\
+		Constantes $\rightarrow$ $\lambda$ $|$ constante \textbf{;} constantes\\
+		Constante $\rightarrow$ \textbf{const} \var \textbf{ =} \num\\
+		Voces $\rightarrow$ Voz \textbf{\}} $|$ Voz \textbf{\}} Voces\\
+		Voz $\rightarrow$ \textbf{Voz (}Var\textbf{) \}} ListaCompases\\
+		ListaCompases $\rightarrow$ ListaCompases CompORepe\\
+		CompORepe $\rightarrow$ Compases $|$ Repetir\\
+		Repetir $\rightarrow$ \textbf{repetir (}\num \textbf{) \{} Compases \textbf{\}}\\
+		Compases $\rightarrow$ Compas \textbf{\}} $|$ Compas \textbf{\}} Compases\\
+		Compas $\rightarrow$ \textbf{compas \{} Figuras\\
+		Figuras $\rightarrow$ Figura \textbf{;} $|$ Figura \textbf{;} Figuras\\
+		Figura $\rightarrow$ Nota $|$ Silencio\\
+		Nota $\rightarrow$ \textbf{nota (}\textit{\textbf{altura}}\textbf{,} Var\textbf{,} \textit{\textbf{duracion}}\textbf{)}\\
+		Silencio $\rightarrow$ \textbf{silencio (}\textit{\textbf{duracion}}\textbf{)}\\
+		Var $\rightarrow$ \var $|$ \num
+	\end{minipage}
+}
+
+$\\$
+Los tokens con valor son:\\
+
+\fbox{
+	\begin{minipage}{33em}
+		\textit{\textbf{num}} = 0$|$[1-9][0-9]*\\
+		\textit{\textbf{duracion}} = (redonda$|$blanca$|$negra$|$corchea$|$semicorchea$|$fusa$|$semifusa)(.)?\\
+		\textit{\textbf{altura}} = (do$|$re$|$mi$|$fa$|$sol$|$la$|$si)(-$|$+)?\\
+		\textit{\textbf{constante}} = [a-zA-Z]+
+	\end{minipage}
+}
+
+$\\$
+
+La gramática que se implementa en \texttt{parser\_rules.py} tiene una pequeña diferencia con
+esta: no existe el no terminal ``CompORepe'', que se agregó acá para simplificar la lectura, pero
+está implementado directamente en la lista de compases.
+
+\section*{Implementación}
+\subsection*{Estructura}
+El lenguaje se representa con una combinación de objetos y listas de estos objetos.  Como se verá
+más adelante, estos objetos tienen métodos para la validación semántica del archivo y para la
+conversión a \emph{midicomp}.
+
+Un archivo parseado queda en un objeto \texttt{Musileng} que es una tupla \texttt{(DefTempo,
+DefCompas, [Constantes] [Voces])}, y que se crea al reconocer la primer producción.
+\texttt{DefTempo} y \texttt{DefCompas} tienen la información correspondiente a las siguientes dos
+producciones; las constantes se toman como una lista de \texttt{(nombre, valor)} y se convierten en
+un diccionario en el momento de construír el \texttt{Musileng}; y finalmente viene la lista de voces
+con el resto de la información.
+
+Una voz, representada en la clase \texttt{Voz}, consiste en la identificación del instrumento y una
+lista de compases.  Los \texttt{repetir (N)} se implementan en el momento del parseo (en
+\texttt{parser\_rules.py} en vez de \texttt{expressions.py}) generando N veces la lista interna de
+compases.  Cada \texttt{Compas} consiste en una lista de objetos \texttt{Figura}, que pueden ser
+de la subclase \texttt{Nota} o \texttt{Silencio}.
+
+Para definir las figuras (y también para las definiciones de los compases y del \emph{tempo}) hay dos
+clases: \texttt{Duracion} y \texttt{Altura}, que representan respectivamente el ritmo (redonda,
+blanca, negra, con o sin puntillo, etc.) y la altura (do, re, mi, sostenido, bemol, etc.) de cada
+figura.  Obviamente los silencios sólo tienen duración.
+
+\subsection*{Validación}
+La validación de la ``partitura'' se hace en forma \emph{top-down} llamando a una colección de
+métodos \texttt{validar} que levantan una excepción con un mensaje (bastante) descriptivo cuando
+detectan un error.  En la clase \texttt{Musileng}, se llama al \texttt{validar()} de cada una de las
+voces, pasándoles la definición del compás esperado\footnotemark[1], más un número de voz, usado
+para los mensajes de error.  Este método hace el pasamanos de esta información, más un número de
+compás, también para los mensajes de error.
+
+El \texttt{validar()} de cada compás hace la suma de las duraciones de sus figuras y la compara con
+la duración esperada por la definición de compás.  Cada objeto \texttt{Duracion} ``sabe'' cuál es su
+duración numérica: 1 para las redondas, 1/2 para las blancas, 1/4 para las negras, etc.
+multiplicado por 1.5 en caso de haber puntillo.  El \texttt{Compas} levana una excepción si la suma
+es mayor o menor a lo esperado.
+
+\footnotetext[1]{Implementamos la verificación de que todas las voces tengan la misma cantidad de
+	compases, pero dado que uno de los ejemplos de la cátedra viola esta regla, la verificación
+	quedó comentada}
+
+\subsection*{Conversión a formato \emph{midicomp}}
+Una vez más, la implementación de esta tarea queda repartida en diversas clases, en las funciones
+\texttt{get\_midicomp()}.  La clase \texttt{Musileng} lo único que sabe hacer es escribir el header,
+pidiéndole la definición del \emph{tempo} en clicks a \texttt{DefTempo}, que implementa la fórmula
+del enunciado.  Luego se van anexando los resultados del \texttt{get\_midicomp()} de cada voz.
+
+Los objetos \texttt{Voz} reciben su id (un número asignado secuencialmente, salteando el
+10\footnotemark[2]), los clicks por redonda, calculados según el enunciado y los pulsos por compás.
+De esta información, lo único que usa \texttt{Voz} es el id, para escribir el header.  Los demás
+datos, los pasa hacia cada uno de sus compases, junto con un nro. de compás, también generado
+secuencialmente.  Cada compás genera su midicomp y este se va anexando al de la voz.
+
+\footnotetext[2]{Con respecto a la percusión sólo tuvimos este cuidado de no generar una pista 10.
+	No hay implementado nada especial para manejar voces de percusión ni presentamos ejemplos con
+	percusión}
+
+La clase \texttt{Compas} debe mantener, además del \emph{string} con el texto generado, el pulso y
+click actual dentro del compás.  Para esto la clase \texttt{Figura} recibe en su
+\texttt{get\_midicomp()} el pulso y click actual, además de los clicks por redonda y pulsos por
+compás definidos ``arriba'' en \texttt{Musileng}.  A partir de estos datos, cada \texttt{Figura},
+sabe dónde empieza y puede calcular dónde termina: primero se calcula el total de clicks que ocupará
+la figura en función de su duración y los clicks por redonda; a partir de este valor, el pulso donde
+termina la nota es 
+
+$$
+pulso_{final} = pulso_{inicial} + \lceil clicks_{total} / clicks\_por\_pulso \rceil
+$$
+\noindent
+y el click es 
+$$
+clicks_{final} = clicks_{total} \% clicks\_por\_pulso
+$$ 
+\noindent
+donde $clicks\_por\_pulso = 384$.
+
+Se hace la excepción de que si $pulso_{final}$ = $pulsos\_por\_compas$, se escribe que la figura
+finaliza en el 00:000 del siguiente compás.  El midicomp de cada figura se completa con la altura
+correspondiente a cada nota y el volúmen, 70 en el caso de las notas y 0 en el de los silencios.  En
+una primer versión de esta conversión los objetos \texttt{Silencio} solamente avanzaban pulsos y
+clicks, generando un \texttt{string} vacío, pero fue necesario cambiar esto para para la
+implementación de uno de los ejemplos, como se verá dos secciones más adelante.
+
+\section*{Tests y ejemplos}
+El \emph{testing} del programa es a tres niveles: para el \emph{lexer} usamos un \emph{unit test} que
+verifica que cada token se reconozca correctamente.  En este nivel no hubo demasiadas
+dificultades, tan solo algunos temas de precedencia que llevaban a que, por ejemplo, ``redonda''
+fuera interpretado como ``Altura: re, Altura: do, Constante: nda'' en vez de como ``Duracion:
+redonda''.
+
+Para el parser encontramos que era muy difícil aislar cada posible producción, por lo que recurrimos
+a tests del sistema completo, es decir ejemplos. Estos están en el directorio \texttt{files}, y son
+los cuatro ejemplos de la cátedra, doce ejemplos de archivos con errores y tres ejemplos correctos.
+Todos los archivos siguen el formato de los de la cátedra: \texttt{<titulo>\_input.txt}.
+
+Los ejemplos erróneos están nombrados \texttt{erroneo\_\$i} con \texttt{\$i} del 1 al 12 y son:
+
+\begin{enumerate}
+	\item Constante definida dos veces
+	\item Repetir vacío
+	\item Repetir con N = 0
+	\item Sin definición de \emph{tempo}
+	\item Sin definición de compas
+	\item Con una constante indefinida
+	\item Sin voces
+	\item Con una voz vacía
+	\item Con un compás vacío
+	\item Falta un ; en una figura
+	\item Un compás es demasiado corto
+	\item Un compás es demasiado largo
+\end{enumerate}
+
+Todos producen un error a nivel sintáctico o semántico (en los métodos \texttt{validar()}). El
+mensaje que corresponde a los primeros intenta informar las posibles causas semánticas de la falla
+que reporta el parser.
+
+En cuanto a los ejemplos correctos, hay que empezar por decir que nuestro conocimiento de escritura
+musical es limitado, apenas superior a lo explicado en el enunciado: Unos rudimentarios
+conocimientos de rítmica, la capacidad de saber qué altura es cuál si contamos las partituras y
+renglones y una ligera sospecha de algunos otros elementos.  Con esas armas nos arriesgamos a
+implementar algunos ejemplos a partir de partituras buscadas en internet.
+
+La elección del primer ejemplo a implementar nos resultó tan obvia a nosotros como a quienes nos
+conocen: el solo de \emph{Ji Ji Ji}, de Patricio Rey y sus Redonditos de Ricota, que todos atribuímos al
+saxo, y sin embargo en el disco está grabado con la guitarra.  Tuvimos que adaptar y corregir la
+partitura que encontramos, hasta lograr que sonara más o menos parecida a lo que escuchábamos en el
+disco.  El ejemplo aparece titulado \texttt{jijiji}.
+
+El sigiente ejemplo es un fragmento de otro clásico de nuestro rock: el \emph{riff} de
+\emph{Post Crucifixión} de Pescado Rabioso.  Aquí nos encontramos con una limitación de
+\emph{Musileng}, ya que el cierre del fragmento contiene dos \emph{síncopas}: notas que empiezan en
+un compás y terminan en otro, y esto en el lenguaje no se puede implementar.  Lo emparchamos
+definiendo los compases como $\frac{12}{8}$ en vez de la correcta $\frac{6}{8}$, con lo que una de las
+síncopas queda dentro del compás, aunque la última resulta insalvable.  Este ejemplo se titula
+\texttt{post\_crucifixion\_riff}.
+
+Por último se adaptó sin demasiadas dificultades la pieza \emph{4:33} del compositor
+contemporáneo John Cage.  Fue para lograr que este ejemplo quede correcto que se modificó la
+conversión de los \texttt{Silencio} a \texttt{midicomp} para que escriba todos los tiempos, pues de
+otra manera la pieza no tenía la duración correcta.
+
+\section*{Uso del programa}
+El ejecutable principal es el script \texttt{musileng}, que implementa la interfaz definida en el
+enunciado.  Para simplificar el testeo implementamos un script \texttt{hacer\_midi.sh} que recibe el
+título de un ejemplo, intenta generar el \texttt{midicomp} y, si lo logra, genera el midi y lo deja
+en el directorio \texttt{midi}, como \texttt{<titulo>.mid}.  Opcionalmente puede pasársele un
+\texttt{-p} para reproducir el midi generado.  Dentro del script se define qué programa se usa para
+cada uno de estos pasos, en particular, usamos \emph{wildmidi} para la reproducción.
+
+Hay un script extra, \texttt{hacer\_todo.sh} que ejecuta el script anterior para todos los ejemplos
+definidos, escribiendo en pantalla, para los ejemplos erróneos, qué error se estaría probando.
 
 \end{document}

@@ -73,14 +73,15 @@ def t_REPETIR(token):
     r"repetir"
     return token
 
+# Tienen que estar antes de las notas, si no interpreta "redonda" como Nota re, Nota do, nda
+def t_DURACION(token):
+    r"(redonda|blanca|negra|corchea|semicorchea|fusa|semifusa)(\.)?"
+    return token
+
 # Quizás sea un error incorporar los bemoles/sostenidos y los puntillos a
 # estos dos tokens, se verá cuánto nos complica la vida.
 def t_ALTURA(token):
     r"(do|re|mi|fa|sol|la|si)(-|\+)?"
-    return token
-
-def t_DURACION(token):
-    r"(redonda|blanca|negra|corchea|semicorchea|fusa|semifusa)(\.)?"
     return token
 
 def t_CONSTANTE(token):

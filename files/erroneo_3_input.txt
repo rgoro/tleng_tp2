@@ -1,0 +1,22 @@
+// Ejemplo con constante indefinida
+
+#tempo negra 90
+#compas 4/4
+
+voz (piano)
+{
+	compas
+	{
+		silencio(negra);
+		silencio(negra);
+		silencio(corchea);
+		silencio(semicorchea);
+		nota(la, 5, semicorchea);
+
+		nota(re, 6, semicorchea);
+		nota(mi, 6, semicorchea);
+		nota(fa, 6, semicorchea);
+		nota(sol, 6, semicorchea);
+	}
+}
+

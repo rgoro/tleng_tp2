@@ -1,0 +1,28 @@
+// Ejemplo donde un compás es demasiado corto
+
+#tempo negra 90
+#compas 4/4
+
+const oct1 = 5;
+const oct2 = 6;
+
+// Instrumentos
+const piano = 0;
+
+voz (piano)
+{
+	compas
+	{
+		silencio(negra);
+		silencio(corchea);
+		silencio(semicorchea);
+		nota(la, oct1, semicorchea);
+
+		nota(re, oct2, semicorchea);
+		nota(mi, oct2, semicorchea);
+		nota(fa, oct2, semicorchea);
+		nota(sol, oct2, semicorchea);
+	}
+}
+
+

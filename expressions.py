@@ -25,8 +25,6 @@ class Duracion(object):
         elif self.valor == "semifusa":
             return 64
 
-        return self.get_valor_tempo
-
     def get_clicks(self, clicks_por_redonda):
         f = self.get_valor_tempo()
         clicks = int(clicks_por_redonda / f)
@@ -105,19 +103,11 @@ class Figura(object):
 
         return (int(pulso), int(clicks))
 
-class Nota(Figura):
-    def __init__(self, altura, octava, duracion):
-        self.altura = altura
-        self.octava = octava
-        self.duracion = duracion
-
-    def get_nota(self):
-        return self.altura.get_nota_americana() + str(self.octava)
-
+    #Esta herencia está sólo para que funcione 4:33
     def get_midicomp(self, canal, compas, pulso_inicial, click_inicial, cpr, pulsos_por_compas):
         (pulso_final, click_final) = self.get_pulsos(pulso_inicial, click_inicial, cpr)
         midicomp = str(compas).zfill(3) + ":" + str(pulso_inicial).zfill(2) + ":" + str(click_inicial).zfill(3)
-        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=70\n"
+        midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=" + self.get_vol() + "\n"
         
         if pulso_final < pulsos_por_compas:
             midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
@@ -128,6 +118,19 @@ class Nota(Figura):
 
         return (midicomp, pulso_final, click_final)
 
+
+class Nota(Figura):
+    def __init__(self, altura, octava, duracion):
+        self.altura = altura
+        self.octava = octava
+        self.duracion = duracion
+
+    def get_nota(self):
+        return self.altura.get_nota_americana() + str(self.octava)
+
+    def get_vol(self):
+        return "70"
+
     def __repr__(self):
         return "Nota: <" + str(self.altura) + " -- " + str(self.octava) + " -- " + str(self.duracion) + ">"
 
@@ -135,12 +138,11 @@ class Silencio(Figura):
     def __init__(self, duracion):
         self.duracion = duracion
 
-    #FIXME Testear que ignorar los pulsos por compas no joda la vida acá.
-    def get_midicomp(self, canal, compas, pulso_inicial, clicks_inicial, cpr, ppc):
-        (pulso_final, clicks_final) = self.get_pulsos(pulso_inicial, clicks_inicial, cpr)
-        midicomp = ""
+    def get_nota(self):
+        return "e-5"
 
-        return (midicomp, pulso_final, clicks_final)
+    def get_vol(self):
+        return "0"
 
     def __repr__(self):
         return "Silencio: <" + str(self.duracion) + ">"
@@ -152,11 +154,20 @@ class Compas(object):
     def validar(self, nro_voz, nro_compas, def_compas):
         suma_duraciones = 0
         for f in self.figuras:
-            suma_duraciones += 1/f.duracion.get_valor_tempo()
+            duracion = f.duracion.get_valor_tempo()
+            if f.duracion.puntillo:
+                #print suma_duraciones, "+= 1 /", duracion
+                suma_duraciones += 1.0/duracion
+                #print suma_duraciones, "+= 1 /", duracion * 0.5
+                suma_duraciones += 1.0/duracion * 0.5
+            else:
+                #print suma_duraciones, "+= 1 /", duracion
+                suma_duraciones += 1.0/duracion
 
-        if suma_duraciones < def_compas.tiempos / def_compas.duracion:
+        #print suma_duraciones, "?", def_compas.tiempos, "/", def_compas.duracion, "=",  1.0*def_compas.tiempos / def_compas.duracion
+        if suma_duraciones < 1.0*def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado corto.".format(nro_voz, nro_compas))
-        elif suma_duraciones > def_compas.tiempos / def_compas.duracion:
+        elif suma_duraciones > 1.0*def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado largo.".format(nro_voz, nro_compas))
         else:
             return True
@@ -179,7 +190,11 @@ class Voz(object):
         self.instrumento = instrumento
         self.compases = compases
 
-    def validar(self, nro_voz, def_compas):
+    def validar(self, nro_voz, def_compas, cant_compases):
+        # FIXME comentado porque uno de los ejemplos de la cátedra tiene este problema.
+        #if len(self.compases) != cant_compases:
+        #    raise Exception("La voz {0} tiene compases de más o de menos".format(nro_voz))
+
         i = 1
         for c in self.compases:
             c.validar(nro_voz, i, def_compas)
@@ -203,7 +218,7 @@ class Voz(object):
     def __repr__(self):
         return str(self.instrumento) + ": " + str(self.compases)
 
-class MusiLen(object):
+class Musileng(object):
     def __init__(self, def_tempo, def_compas, constantes, voces):
         self.def_tempo = def_tempo
         self.def_compas = def_compas
@@ -212,11 +227,11 @@ class MusiLen(object):
         if not self.validar_voces():
             raise Exception("Voces inconsistentes (aunque tendrían que lanzar su propia excepción).")
 
-    # TODO: validar y tirar excepciones razonables
     def validar_voces(self):
         i = 1
+        cant_compases = len(self.voces[0].compases)
         for v in self.voces:
-            v.validar(i, self.def_compas)
+            v.validar(i, self.def_compas, cant_compases)
             i += 1
 
         return True
@@ -229,6 +244,8 @@ class MusiLen(object):
         for voz in self.voces:
             midicomp += voz.get_midicomp(str(i), clicks_por_redonda, self.def_compas.tiempos)
             i += 1
+            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
+                i += 1
 
         return midicomp
 
@@ -236,11 +253,16 @@ class MusiLen(object):
         for voz in self.voces:
             if voz.instrumento in self.constantes.keys():
                 voz.instrumento = self.constantes[voz.instrumento]
+            elif type(voz.instrumento) != int:
+                raise Exception("Constante «{0}» indefinida".format(voz.instrumento))
 
             for compas in voz.compases:
                 for figura in compas.figuras:
-                    if type(figura) == Nota and figura.octava in self.constantes.keys():
-                        figura.octava = self.constantes[figura.octava]
+                    if type(figura) == Nota:
+                        if figura.octava in self.constantes.keys():
+                            figura.octava = self.constantes[figura.octava]
+                        elif type(figura.octava) != int :
+                            raise Exception("Constante «{0}» indefinida".format(figura.octava))
 
             
     def get_header(self):

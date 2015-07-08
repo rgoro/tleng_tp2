@@ -5,8 +5,8 @@ from lexer_rules import tokens
 from expressions import *
 
 def p_musilen(sub):
-    'musilen : def_tempo def_compas constantes voces'
-    sub[0] = MusiLen(sub[1], sub[2], sub[3], sub[4])
+    'musileng : def_tempo def_compas constantes voces'
+    sub[0] = Musileng(sub[1], sub[2], sub[3], sub[4])
 
 def p_def_tempo(sub):
     'def_tempo : DEF_TEMPO DURACION num'
@@ -17,16 +17,19 @@ def p_def_compas(sub):
     sub[0] = DefCompas(sub[2], sub[4])
 
 def p_constantes(sub):
-    '''constantes : constante PUNTO_Y_COMA
+    '''constantes : empty
                   | constante PUNTO_Y_COMA constantes'''
-    if len(sub) == 3:
-        sub[0] = [sub[1]]
+    if len(sub) == 2:
+        sub[0] = []
     else:
         sub[0] = sub[3]
-        sub[0].insert(0, sub[1])
+        if sub[1][0] not in [x for (x, y) in sub[0]]:
+            sub[0].insert(0, sub[1])
+        else:
+            raise Exception("Constante {0} definida dos veces".format(sub[1][0]))
 
 def p_constante(sub):
-    'constante : CONST label IGUAL num'
+    'constante : CONST CONSTANTE IGUAL num'
     sub[0] = (sub[2], sub[4])
 
 def p_voces(sub):
@@ -42,8 +45,6 @@ def p_voz(sub):
     'voz : VOZ PAREN_L var PAREN_R LLAVE_L lista_compases'
     sub[0] = Voz(sub[3], sub[6])
 
-                      #| lista_compases compases
-                      #| lista_compases repetir'''
 def p_lista_compases(sub):
     '''lista_compases : compases
                       | repetir
@@ -66,7 +67,9 @@ def p_compases(sub):
 def p_repetir(sub):
     'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases LLAVE_R'
     sub[0] = []
-    for i in range(int(sub[3])):
+    if sub[3] <= 1:
+        raise Exception("Repetir con N <= 1")
+    for i in range(sub[3]):
         sub[0] += sub[6]
 
 def p_compas(sub):
@@ -97,17 +100,30 @@ def p_silencio(sub):
 
 def p_var(sub):
     '''var : num
-           | label'''
+           | CONSTANTE'''
     sub[0] = sub[1]
 
 def p_num(sub):
     'num : NUMERO'
     sub[0] = int(sub[1])
 
-def p_label(sub):
-    'label : CONSTANTE'
-    sub[0] = sub[1]
+def p_empty(p):
+    'empty :'
+    pass
 
-#def p_error(sub):
-#    raise Exception("Syntax error.")
+def p_error(sub):
+    if sub is None:
+        raise Exception("EOF inesperado. ¿No hay voces?")
+    else:
+        message = "Error de sintáxis en la línea {0}, no esperaba un token «{1}».".format(sub.lineno, sub.type)
+        if sub.type == "DEF_COMPAS":
+            message += "\nProbablemente faltó el #tempo."
+        elif sub.type == "CONST":
+            message += "\nProbablemente faltó o el #compas o el ; de una constante."
+        elif sub.type == "LLAVE_R":
+            message += "\nO falta un ; en una figura o hay algo (voz, repetir o compás) vacío."
+        elif sub.type == "NOTA" or sub.type == "SILENCIO":
+            message = "Error de sintáxis en la línea {0}, falta un ; en una figura.".format(sub.lineno)
+
+        raise Exception(message)
 

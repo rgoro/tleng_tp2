@@ -5,3 +5,6 @@ __pycache__/
 
 *parser.out
 *parsetab.py
+midicomp
+informe/main.aux
+informe/main.log

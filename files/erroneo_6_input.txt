@@ -1,0 +1,17 @@
+// Ejemplo con compás vacío
+
+#tempo negra 90
+#compas 4/4
+
+const oct1 = 5;
+const oct2 = 6;
+
+// Instrumentos
+const piano = 0;
+
+voz (piano)
+{
+	compas { }
+}
+
+

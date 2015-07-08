@@ -9,10 +9,10 @@ from ply.lex import lex
 from ply.yacc import yacc
 
 if __name__ == "__main__":
-    if len(argv) != 2:
+    if len(argv) != 3:
         print "Parametros invalidos."
         print "Uso:"
-        print "  parser.py archivo_entrada"
+        print "  musileng archivo_entrada archivo_salida"
         exit(1)
 
     input_file = open(argv[1], "r")
@@ -25,7 +25,8 @@ if __name__ == "__main__":
     try:
         algo = parser.parse(text, lexer)
         midicomp = algo.get_midicomp()
-        print midicomp
+        with open (argv[2], "w") as f:
+            f.write(midicomp)
     except Exception as e:
         print e.message
         exit(1)
