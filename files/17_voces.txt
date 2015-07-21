@@ -1,0 +1,164 @@
+// ----------------
+// Tempo 0
+// ----------------
+
+#tempo negra 120
+#compas 3/4
+
+const oct1 = 5;
+
+// Instrumentos
+const clarinete1 = 1;
+const clarinete2 = 2;
+const clarinete3 = 3;
+const clarinete4 = 4;
+const clarinete5 = 5;
+const clarinete6 = 6;
+const clarinete7 = 7;
+const clarinete8 = 8;
+const clarinete9 = 9;
+const clarinete10 = 10;
+const clarinete11 = 11;
+const clarinete12 = 12;
+const clarinete13 = 13;
+const clarinete14 = 14;
+const clarinete15 = 15;
+const clarinete16 = 16;
+const clarinete17 = 17;
+
+voz (clarinete1)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete2)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete3)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete4)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete5)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete6)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete7)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete8)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete9)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete10)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete11)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete12)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete13)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete14)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete15)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete16)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}
+voz (clarinete17)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}

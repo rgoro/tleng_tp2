@@ -238,6 +238,8 @@ class Musileng(object):
             raise Exception("Voces inconsistentes (aunque tendrían que lanzar su propia excepción).")
 
     def validar_voces(self):
+        if len(self.voces) > 16:
+            raise Exception("Error. Hay mas de 16 voces.")
         i = 1
         cant_compases = len(self.voces[0].compases)
         for v in self.voces:
