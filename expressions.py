@@ -80,6 +80,9 @@ class DefTempo(object):
         self.duracion = duracion
         self.valor = valor
 
+        if valor <= 0:
+            raise Exception('El #tempo debe ser mayor a 0')
+
     def get_tempo_midi(self):
         return (1000000 * 60 * self.duracion.get_valor_tempo()) / (4 * self.valor)
 
