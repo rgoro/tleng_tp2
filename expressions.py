@@ -240,11 +240,12 @@ class Musileng(object):
     def validar_voces(self):
         if len(self.voces) > 16:
             raise Exception("Error. Hay mas de 16 voces.")
-        i = 1
         cant_compases = len(self.voces[0].compases)
-        for v in self.voces:
-            v.validar(i, self.def_compas, cant_compases)
-            i += 1
+        for index, voz in enumerate(self.voces, start=1):
+            num_instrumento = self.constantes[voz.instrumento]
+            if num_instrumento < 0 or num_instrumento > 127:
+                raise Exception("El número de instrumento tiene que estar entre 0 y 127. Existe instrumento con número {0}".format(num_instrumento))
+            voz.validar(index, self.def_compas, cant_compases)
 
         return True
 
