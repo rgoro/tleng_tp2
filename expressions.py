@@ -4,6 +4,7 @@ from math import ceil
 
 CLICKS_POR_PULSO = 384
 
+
 class Duracion(object):
     def __init__(self, valor):
         self.puntillo = '.' in valor
@@ -35,6 +36,7 @@ class Duracion(object):
 
     def __repr__(self):
         return self.valor + (" con puntillo" if self.puntillo else "")
+
 
 class Altura(object):
     def __init__(self, valor):
@@ -72,13 +74,14 @@ class Altura(object):
     def __repr__(self):
         return self.valor + (" sostenido" if self.sostenido else (" bemol" if self.bemol else ""))
 
+
 class DefTempo(object):
     def __init__(self, duracion, valor):
         self.duracion = duracion
         self.valor = valor
 
     def get_tempo_midi(self):
-        return (1000000 * 60 * self.duracion.get_valor_tempo())/(4 * self.valor)
+        return (1000000 * 60 * self.duracion.get_valor_tempo()) / (4 * self.valor)
 
     def __repr__(self):
         return "tempo: " + str(self.duracion) + " = " + str(self.valor)
@@ -94,7 +97,7 @@ class DefCompas(object):
         return str(self.tiempos) + "/" + str(self.duracion)
 
 
-#Uso herencia por instinto de programador, no estoy seguro si la voy a necesitar.
+# Uso herencia por instinto de programador, no estoy seguro si la voy a necesitar.
 class Figura(object):
     def get_pulsos(self, pulso_inicial, clicks_inicial, clicks_por_redonda):
         clicks_total = clicks_inicial + self.duracion.get_clicks(clicks_por_redonda)
@@ -103,12 +106,12 @@ class Figura(object):
 
         return (int(pulso), int(clicks))
 
-    #Esta herencia está sólo para que funcione 4:33
+    # Esta herencia está sólo para que funcione 4:33
     def get_midicomp(self, canal, compas, pulso_inicial, click_inicial, cpr, pulsos_por_compas):
         (pulso_final, click_final) = self.get_pulsos(pulso_inicial, click_inicial, cpr)
         midicomp = str(compas).zfill(3) + ":" + str(pulso_inicial).zfill(2) + ":" + str(click_inicial).zfill(3)
         midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=" + self.get_vol() + "\n"
-        
+
         if pulso_final < pulsos_por_compas:
             midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
         else:
@@ -134,6 +137,7 @@ class Nota(Figura):
     def __repr__(self):
         return "Nota: <" + str(self.altura) + " -- " + str(self.octava) + " -- " + str(self.duracion) + ">"
 
+
 class Silencio(Figura):
     def __init__(self, duracion):
         self.duracion = duracion
@@ -147,6 +151,7 @@ class Silencio(Figura):
     def __repr__(self):
         return "Silencio: <" + str(self.duracion) + ">"
 
+
 class Compas(object):
     def __init__(self, figuras):
         self.figuras = figuras
@@ -156,18 +161,18 @@ class Compas(object):
         for f in self.figuras:
             duracion = f.duracion.get_valor_tempo()
             if f.duracion.puntillo:
-                #print suma_duraciones, "+= 1 /", duracion
-                suma_duraciones += 1.0/duracion
-                #print suma_duraciones, "+= 1 /", duracion * 0.5
-                suma_duraciones += 1.0/duracion * 0.5
+                # print suma_duraciones, "+= 1 /", duracion
+                suma_duraciones += 1.0 / duracion
+                # print suma_duraciones, "+= 1 /", duracion * 0.5
+                suma_duraciones += 1.0 / duracion * 0.5
             else:
-                #print suma_duraciones, "+= 1 /", duracion
-                suma_duraciones += 1.0/duracion
+                # print suma_duraciones, "+= 1 /", duracion
+                suma_duraciones += 1.0 / duracion
 
-        #print suma_duraciones, "?", def_compas.tiempos, "/", def_compas.duracion, "=",  1.0*def_compas.tiempos / def_compas.duracion
-        if suma_duraciones < 1.0*def_compas.tiempos / def_compas.duracion:
+        # print suma_duraciones, "?", def_compas.tiempos, "/", def_compas.duracion, "=",  1.0*def_compas.tiempos / def_compas.duracion
+        if suma_duraciones < 1.0 * def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado corto.".format(nro_voz, nro_compas))
-        elif suma_duraciones > 1.0*def_compas.tiempos / def_compas.duracion:
+        elif suma_duraciones > 1.0 * def_compas.tiempos / def_compas.duracion:
             raise Exception("Voz {0} incorrecta: el compás {1} es demasiado largo.".format(nro_voz, nro_compas))
         else:
             return True
@@ -181,9 +186,10 @@ class Compas(object):
             midicomp += midicomp_figura
 
         return midicomp
-    
+
     def __repr__(self):
         return str(self.figuras)
+
 
 class Voz(object):
     def __init__(self, instrumento, compases):
@@ -192,7 +198,7 @@ class Voz(object):
 
     def validar(self, nro_voz, def_compas, cant_compases):
         # FIXME comentado porque uno de los ejemplos de la cátedra tiene este problema.
-        #if len(self.compases) != cant_compases:
+        # if len(self.compases) != cant_compases:
         #    raise Exception("La voz {0} tiene compases de más o de menos".format(nro_voz))
 
         i = 1
@@ -218,6 +224,7 @@ class Voz(object):
     def __repr__(self):
         return str(self.instrumento) + ": " + str(self.compases)
 
+
 class Musileng(object):
     def __init__(self, def_tempo, def_compas, constantes, voces):
         self.def_tempo = def_tempo
@@ -239,12 +246,12 @@ class Musileng(object):
     def get_midicomp(self):
         self.reemplazar_constantes()
         midicomp = self.get_header()
-        clicks_por_redonda = CLICKS_POR_PULSO*self.def_compas.duracion
+        clicks_por_redonda = CLICKS_POR_PULSO * self.def_compas.duracion
         i = 1
         for voz in self.voces:
             midicomp += voz.get_midicomp(str(i), clicks_por_redonda, self.def_compas.tiempos)
             i += 1
-            if i == 10: # FIXME Salteo la voz de la percusión, falta manejarla.
+            if i == 10:  # FIXME Salteo la voz de la percusión, falta manejarla.
                 i += 1
 
         return midicomp
@@ -261,10 +268,9 @@ class Musileng(object):
                     if type(figura) == Nota:
                         if figura.octava in self.constantes.keys():
                             figura.octava = self.constantes[figura.octava]
-                        elif type(figura.octava) != int :
+                        elif type(figura.octava) != int:
                             raise Exception("Constante «{0}» indefinida".format(figura.octava))
 
-            
     def get_header(self):
         header = "MFile 1 " + str(len(self.voces) + 1) + " " + str(CLICKS_POR_PULSO) + "\n"
         header += "MTrk\n"
@@ -277,4 +283,3 @@ class Musileng(object):
 
     def __repr__(self):
         return "Musilen {\n\t" + str(self.def_tempo) + "\n\t" + str(self.def_compas) + "\n\t" + str(self.constantes) + "\n\t" + str(self.voces) + "\n}"
-
