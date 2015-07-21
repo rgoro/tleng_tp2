@@ -127,6 +127,8 @@ class Figura(object):
 
 class Nota(Figura):
     def __init__(self, altura, octava, duracion):
+        if octava < 1 or octava > 9:
+            raise Exception('Las octavas de las notas deben estar en el rango [1,9]. Octava fuera de rango {0}'.format(octava))
         self.altura = altura
         self.octava = octava
         self.duracion = duracion
