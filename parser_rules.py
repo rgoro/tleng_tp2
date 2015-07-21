@@ -77,8 +77,8 @@ def p_compases(sub):
 def p_repetir(sub):
     'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases LLAVE_R'
     sub[0] = []
-    if sub[3] <= 1:
-        raise Exception("Repetir con N <= 1")
+    if sub[3] < 1:
+        raise Exception("Repetir con N < 1. Linea con error {0}. Valor del repetir {1}".format(sub.lineno(1), sub[3]))
     for i in range(sub[3]):
         sub[0] += sub[6]
 
