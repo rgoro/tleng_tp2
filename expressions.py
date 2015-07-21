@@ -127,8 +127,6 @@ class Figura(object):
 
 class Nota(Figura):
     def __init__(self, altura, octava, duracion):
-        if octava < 1 or octava > 9:
-            raise Exception('Las octavas de las notas deben estar en el rango [1,9]. Octava fuera de rango {0}'.format(octava))
         self.altura = altura
         self.octava = octava
         self.duracion = duracion
@@ -244,6 +242,8 @@ class Musileng(object):
             raise Exception("Error. Hay mas de 16 voces.")
         cant_compases = len(self.voces[0].compases)
         for index, voz in enumerate(self.voces, start=1):
+            if voz.instrumento not in self.constantes:
+                raise Exception("La constante para el instrumento {0} no fue definida".format(voz.instrumento))
             num_instrumento = self.constantes[voz.instrumento]
             if num_instrumento < 0 or num_instrumento > 127:
                 raise Exception("El número de instrumento tiene que estar entre 0 y 127. Existe instrumento con número {0}".format(num_instrumento))
@@ -276,6 +276,9 @@ class Musileng(object):
                     if type(figura) == Nota:
                         if figura.octava in self.constantes.keys():
                             figura.octava = self.constantes[figura.octava]
+                            if figura.octava < 1 or figura.octava > 9:
+                                raise Exception('Las octavas de las notas deben estar en el rango [1,9]. Octava fuera de rango {0}'.format(figura.octava))
+
                         elif type(figura.octava) != int:
                             raise Exception("Constante «{0}» indefinida".format(figura.octava))
 
