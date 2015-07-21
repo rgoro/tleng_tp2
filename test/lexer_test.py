@@ -8,6 +8,7 @@ from ply.lex import lex
 
 import lexer_rules
 
+
 class TestLexer(TestCase):
     def setUp(self):
         self.lexer = lex(module=lexer_rules)
@@ -189,7 +190,7 @@ class TestLexer(TestCase):
         token = self.lexer.token()
         self.assertEqual(token.type, "ALTURA")
         self.assertEqual(token.value, "si+")
-    
+
     def test_constante(self):
         text = "alguna cosa"
         self.lexer.input(text)
