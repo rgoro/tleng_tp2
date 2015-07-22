@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import traceback
+#import traceback
 
 import lexer_rules
 import parser_rules
@@ -31,6 +31,6 @@ if __name__ == "__main__":
             f.write(midicomp)
     except Exception as e:
         print e.message
-        tb = traceback.format_exc()
-        print tb
+        #tb = traceback.format_exc()
+        #print tb
         exit(1)
