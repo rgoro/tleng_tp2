@@ -1,0 +1,20 @@
+// ----------------
+// Octava fuera de rango
+// ----------------
+
+#tempo negra 120
+#compas 3/4
+
+const oct1 = 10;
+
+// Instrumentos
+const clarinete = 71;
+
+voz (clarinete)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+}

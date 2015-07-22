@@ -4,17 +4,21 @@ from lexer_rules import tokens
 
 from expressions import *
 
+
 def p_musilen(sub):
     'musileng : def_tempo def_compas constantes voces'
     sub[0] = Musileng(sub[1], sub[2], sub[3], sub[4])
+
 
 def p_def_tempo(sub):
     'def_tempo : DEF_TEMPO DURACION num'
     sub[0] = DefTempo(Duracion(sub[2]), sub[3])
 
+
 def p_def_compas(sub):
     'def_compas : DEF_COMPAS num BARRA num'
     sub[0] = DefCompas(sub[2], sub[4])
+
 
 def p_constantes(sub):
     '''constantes : empty
@@ -28,9 +32,11 @@ def p_constantes(sub):
         else:
             raise Exception("Constante {0} definida dos veces".format(sub[1][0]))
 
+
 def p_constante(sub):
     'constante : CONST CONSTANTE IGUAL num'
     sub[0] = (sub[2], sub[4])
+
 
 def p_voces(sub):
     '''voces : voz LLAVE_R
@@ -41,9 +47,11 @@ def p_voces(sub):
         sub[0] = sub[3]
         sub[0].insert(0, sub[1])
 
+
 def p_voz(sub):
     'voz : VOZ PAREN_L var PAREN_R LLAVE_L lista_compases'
     sub[0] = Voz(sub[3], sub[6])
+
 
 def p_lista_compases(sub):
     '''lista_compases : compases
@@ -55,6 +63,7 @@ def p_lista_compases(sub):
     elif len(sub) == 3:
         sub[0] = sub[1] + sub[2]
 
+
 def p_compases(sub):
     '''compases : compas LLAVE_R
                 | compas LLAVE_R compases'''
@@ -64,19 +73,22 @@ def p_compases(sub):
         sub[0] = sub[3]
         sub[0].insert(0, sub[1])
 
+
 def p_repetir(sub):
     'repetir : REPETIR PAREN_L NUMERO PAREN_R LLAVE_L compases LLAVE_R'
     sub[0] = []
-    if sub[3] <= 1:
-        raise Exception("Repetir con N <= 1")
+    if sub[3] < 1:
+        raise Exception("Repetir con N < 1. Linea con error {0}. Valor del repetir {1}".format(sub.lineno(1), sub[3]))
     for i in range(sub[3]):
         sub[0] += sub[6]
+
 
 def p_compas(sub):
     'compas : COMPAS LLAVE_L figuras'
     sub[0] = Compas(sub[3])
 
-def p_figuras(sub): 
+
+def p_figuras(sub):
     '''figuras : figura PUNTO_Y_COMA
                | figura PUNTO_Y_COMA figuras'''
     if len(sub) == 3:
@@ -84,32 +96,39 @@ def p_figuras(sub):
     else:
         sub[0] = sub[3]
         sub[0].insert(0, sub[1])
-    
+
+
 def p_figura(sub):
     '''figura : nota
               | silencio'''
     sub[0] = sub[1]
 
+
 def p_nota(sub):
     'nota : NOTA PAREN_L ALTURA COMA var COMA DURACION PAREN_R'
     sub[0] = Nota(Altura(sub[3]), sub[5], Duracion(sub[7]))
-    
+
+
 def p_silencio(sub):
     'silencio : SILENCIO PAREN_L DURACION PAREN_R'
     sub[0] = Silencio(Duracion(sub[3]))
+
 
 def p_var(sub):
     '''var : num
            | CONSTANTE'''
     sub[0] = sub[1]
 
+
 def p_num(sub):
     'num : NUMERO'
     sub[0] = int(sub[1])
 
+
 def p_empty(p):
     'empty :'
     pass
+
 
 def p_error(sub):
     if sub is None:
@@ -126,4 +145,3 @@ def p_error(sub):
             message = "Error de sintáxis en la línea {0}, falta un ; en una figura.".format(sub.lineno)
 
         raise Exception(message)
-

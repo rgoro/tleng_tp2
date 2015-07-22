@@ -1,0 +1,22 @@
+// ----------------
+// Tempo 0
+// ----------------
+
+#tempo negra 0
+#compas 3/4
+
+const oct1 = 5;
+
+// Instrumentos
+const clarinete = 71;
+
+voz (clarinete)
+{
+	compas
+	{
+		nota(re, oct1, blanca);
+		nota(re, oct1, negra);
+	}
+
+
+}
