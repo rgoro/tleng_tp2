@@ -28,14 +28,14 @@ def p_constantes(sub):
     else:
         sub[0] = sub[3]
         if sub[1][0] not in [x for (x, y) in sub[0]]:
-            sub[0].insert(0, sub[1])
+            sub[0].insert(0, (sub[1][0], sub[1][1]))
         else:
-            raise Exception("Constante {0} definida dos veces".format(sub[1][0]))
+            raise Exception("Constante {0} definida dos veces (línea {1})".format(sub[1][0], sub[1][2]))
 
 
 def p_constante(sub):
     'constante : CONST CONSTANTE IGUAL num'
-    sub[0] = (sub[2], sub[4])
+    sub[0] = (sub[2], sub[4], sub.lineno(1))
 
 
 def p_voces(sub):
@@ -50,7 +50,7 @@ def p_voces(sub):
 
 def p_voz(sub):
     'voz : VOZ PAREN_L var PAREN_R LLAVE_L lista_compases'
-    sub[0] = Voz(sub[3], sub[6])
+    sub[0] = Voz(sub[3], sub[6], sub.lineno(1))
 
 
 def p_lista_compases(sub):
@@ -85,7 +85,7 @@ def p_repetir(sub):
 
 def p_compas(sub):
     'compas : COMPAS LLAVE_L figuras'
-    sub[0] = Compas(sub[3])
+    sub[0] = Compas(sub[3], sub.lineno(1))
 
 
 def p_figuras(sub):
@@ -132,7 +132,7 @@ def p_empty(p):
 
 def p_error(sub):
     if sub is None:
-        raise Exception("EOF inesperado. ¿No hay voces?")
+        raise Exception("Fin de archivo inesperado. ¿No hay voces?")
     else:
         message = "Error de sintáxis en la línea {0}, no esperaba un token «{1}».".format(sub.lineno, sub.type)
         if sub.type == "DEF_COMPAS":

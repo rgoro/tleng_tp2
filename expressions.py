@@ -4,7 +4,6 @@ from math import ceil
 
 CLICKS_POR_PULSO = 384
 
-
 class Duracion(object):
     def __init__(self, valor):
         self.puntillo = '.' in valor
@@ -152,8 +151,9 @@ class Silencio(Figura):
 
 
 class Compas(object):
-    def __init__(self, figuras):
+    def __init__(self, figuras, lineno):
         self.figuras = figuras
+        self.lineno = lineno
 
     def validar(self, nro_voz, nro_compas, def_compas):
         suma_duraciones = 0
@@ -169,10 +169,11 @@ class Compas(object):
                 suma_duraciones += 1.0 / duracion
 
         # print suma_duraciones, "?", def_compas.tiempos, "/", def_compas.duracion, "=",  1.0*def_compas.tiempos / def_compas.duracion
+        msg = "Voz {0} incorrecta: el compás {1} (definido en la línea {2}) es demasiado".format(nro_voz, nro_compas, self.lineno)
         if suma_duraciones < 1.0 * def_compas.tiempos / def_compas.duracion:
-            raise Exception("Voz {0} incorrecta: el compás {1} es demasiado corto.".format(nro_voz, nro_compas))
+            raise Exception(msg + " corto.")
         elif suma_duraciones > 1.0 * def_compas.tiempos / def_compas.duracion:
-            raise Exception("Voz {0} incorrecta: el compás {1} es demasiado largo.".format(nro_voz, nro_compas))
+            raise Exception(msg + " largo.")
         else:
             return True
 
@@ -191,9 +192,10 @@ class Compas(object):
 
 
 class Voz(object):
-    def __init__(self, instrumento, compases):
+    def __init__(self, instrumento, compases, lineno):
         self.instrumento = instrumento
         self.compases = compases
+        self.lineno = lineno
 
     def validar(self, nro_voz, def_compas, cant_compases):
         # FIXME comentado porque uno de los ejemplos de la cátedra tiene este problema.
@@ -239,7 +241,7 @@ class Musileng(object):
         cant_compases = len(self.voces[0].compases)
         for index, voz in enumerate(self.voces, start=1):
             if voz.instrumento not in self.constantes:
-                raise Exception("La constante para el instrumento {0} no fue definida".format(voz.instrumento))
+                raise Exception("La constante para el instrumento {0} no fue definida (usada por la voz definida en la línea {1})".format(voz.instrumento, voz.lineno))
             num_instrumento = self.constantes[voz.instrumento]
             if num_instrumento < 0 or num_instrumento > 127:
                 raise Exception("El número de instrumento tiene que estar entre 0 y 127. Existe instrumento con número {0}".format(num_instrumento))
