@@ -1,0 +1,23 @@
+// ----------------
+// Silencios y negras
+// ----------------
+
+#tempo negra 120
+#compas 3/4
+
+const oct1 = 5;
+
+// Instrumentos
+const clarinete = 71;
+
+voz (clarinete)
+{
+	compas
+	{
+		nota(do, oct1, negra);
+		nota(re, oct1, negra);
+		nota(mi, oct1, negra);
+	}
+
+
+}
