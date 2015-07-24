@@ -3,7 +3,7 @@
 // ----------------
 
 #tempo negra 120
-#compas 3/4
+#compas 4/4
 
 const oct1 = 5;
 
@@ -16,8 +16,31 @@ voz (clarinete)
 	{
 		nota(do, oct1, negra);
 		nota(re, oct1, negra);
-		nota(mi, oct1, negra);
+		nota(do, oct1, negra);
+		nota(re, oct1, negra);
 	}
 
+	compas
+	{
+		nota(do, oct1, negra);
+		silencio(negra);
+		silencio(negra);
+		nota(re, oct1, negra);
+	}
 
+	compas
+	{
+		nota(do, oct1, negra);
+		nota(re, oct1, negra);
+		silencio(negra);
+		silencio(negra);
+	}
+
+	compas
+	{
+		silencio(negra);
+		silencio(negra);
+		silencio(negra);
+		nota(do, oct1, negra);
+	}
 }
