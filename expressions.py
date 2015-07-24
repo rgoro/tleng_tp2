@@ -246,7 +246,7 @@ class Musileng(object):
                 raise Exception("La constante para el instrumento {0} no fue definida (usada por la voz definida en la línea {1})".format(voz.instrumento, voz.lineno))
             num_instrumento = self.constantes[voz.instrumento]
             if num_instrumento < 0 or num_instrumento > 127:
-                raise Exception("El número de instrumento tiene que estar entre 0 y 127. Existe instrumento con número {0}".format(num_instrumento))
+                raise Exception("El número de instrumento tiene que estar entre 0 y 127. Existe instrumento con número {0}. Usado en la línea {1}".format(num_instrumento, voz.lineno))
             voz.validar(index, self.def_compas, cant_compases)
 
         return True
