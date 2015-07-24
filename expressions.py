@@ -109,6 +109,7 @@ class Figura(object):
 
         return (int(pulso), int(clicks))
 
+
 class Nota(Figura):
     def __init__(self, altura, octava, duracion):
         self.altura = altura
@@ -140,7 +141,7 @@ class Silencio(Figura):
     def __init__(self, duracion):
         self.duracion = duracion
 
-    #FIXME Testear que ignorar los pulsos por compas no joda la vida acá.
+    # FIXME Testear que ignorar los pulsos por compas no joda la vida acá.
     def get_midicomp(self, canal, compas, pulso_inicial, clicks_inicial, cpr, ppc):
         (pulso_final, clicks_final) = self.get_pulsos(pulso_inicial, clicks_inicial, cpr)
         midicomp = ""

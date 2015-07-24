@@ -39,3 +39,5 @@ echo "erroneo_12 $(head -1 files/erroneo_12_input.txt)"
 ./hacer_midi.sh erroneo_12
 echo "tempo_0 $(head -1 files/tempo_0_input.txt)"
 ./hacer_midi.sh tempo_0
+echo "instrumento_fuera_rango $(head -1 files/instrumento_fuera_rango_input.txt)"
+./hacer_midi.sh instrumento_fuera_rango
