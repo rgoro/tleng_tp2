@@ -41,3 +41,5 @@ echo "tempo_0 $(head -1 files/tempo_0_input.txt)"
 ./hacer_midi.sh tempo_0
 echo "instrumento_fuera_rango $(head -1 files/instrumento_fuera_rango_input.txt)"
 ./hacer_midi.sh instrumento_fuera_rango
+echo "octava_de_nota_fuera_de_rango $(head -1 files/octava_de_nota_fuera_de_rango_input.txt)"
+./hacer_midi.sh octava_de_nota_fuera_de_rango
