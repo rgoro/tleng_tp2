@@ -111,10 +111,11 @@ class Figura(object):
 
 
 class Nota(Figura):
-    def __init__(self, altura, octava, duracion):
+    def __init__(self, altura, octava, duracion, lineno):
         self.altura = altura
         self.octava = octava
         self.duracion = duracion
+        self.lineno = lineno
 
     def get_nota(self):
         return self.altura.get_nota_americana() + str(self.octava)
@@ -138,8 +139,9 @@ class Nota(Figura):
 
 
 class Silencio(Figura):
-    def __init__(self, duracion):
+    def __init__(self, duracion, lineno):
         self.duracion = duracion
+        self.lineno = lineno
 
     # FIXME Testear que ignorar los pulsos por compas no joda la vida acá.
     def get_midicomp(self, canal, compas, pulso_inicial, clicks_inicial, cpr, ppc):
@@ -277,7 +279,7 @@ class Musileng(object):
                         if figura.octava in self.constantes.keys():
                             figura.octava = self.constantes[figura.octava]
                             if figura.octava < 1 or figura.octava > 9:
-                                raise Exception('Las octavas de las notas deben estar en el rango [1,9]. Octava fuera de rango {0}'.format(figura.octava))
+                                raise Exception('Las octavas de las notas deben estar en el rango [1,9]. Octava fuera de rango con valor {0}. Usada en línea {1}'.format(figura.octava, figura.lineno))
 
                         elif type(figura.octava) != int:
                             raise Exception("Constante «{0}» indefinida".format(figura.octava))

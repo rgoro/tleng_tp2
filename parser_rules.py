@@ -106,12 +106,12 @@ def p_figura(sub):
 
 def p_nota(sub):
     'nota : NOTA PAREN_L ALTURA COMA var COMA DURACION PAREN_R'
-    sub[0] = Nota(Altura(sub[3]), sub[5], Duracion(sub[7]))
+    sub[0] = Nota(Altura(sub[3]), sub[5], Duracion(sub[7]), sub.lineno(1))
 
 
 def p_silencio(sub):
     'silencio : SILENCIO PAREN_L DURACION PAREN_R'
-    sub[0] = Silencio(Duracion(sub[3]))
+    sub[0] = Silencio(Duracion(sub[3]), sub.lineno(1))
 
 
 def p_var(sub):
