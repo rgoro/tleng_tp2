@@ -13,7 +13,7 @@ echo "post_crucifixion_riff"
 ./hacer_midi.sh post_crucifixion_riff
 echo "4\:33"
 ./hacer_midi.sh 4\:33
-echo "erroneo_1 $(head -1 files/erroneo_1_input.txt)" 
+echo "erroneo_1 $(head -1 files/erroneo_1_input.txt)"
 ./hacer_midi.sh erroneo_1
 echo "erroneo_2 $(head -1 files/erroneo_2_input.txt)"
 ./hacer_midi.sh erroneo_2
@@ -37,3 +37,5 @@ echo "erroneo_11 $(head -1 files/erroneo_11_input.txt)"
 ./hacer_midi.sh erroneo_11
 echo "erroneo_12 $(head -1 files/erroneo_12_input.txt)"
 ./hacer_midi.sh erroneo_12
+echo "tempo_0 $(head -1 files/tempo_0_input.txt)"
+./hacer_midi.sh tempo_0

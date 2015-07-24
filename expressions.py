@@ -4,6 +4,7 @@ from math import ceil
 
 CLICKS_POR_PULSO = 384
 
+
 class Duracion(object):
     def __init__(self, valor):
         self.puntillo = '.' in valor
@@ -75,12 +76,12 @@ class Altura(object):
 
 
 class DefTempo(object):
-    def __init__(self, duracion, valor):
+    def __init__(self, duracion, valor, lineno):
         self.duracion = duracion
         self.valor = valor
 
         if valor <= 0:
-            raise Exception('El #tempo debe ser mayor a 0')
+            raise Exception('El #tempo debe ser mayor a 0 (línea {0})'.format(lineno))
 
     def get_tempo_midi(self):
         return (1000000 * 60 * self.duracion.get_valor_tempo()) / (4 * self.valor)
@@ -121,7 +122,7 @@ class Nota(Figura):
         (pulso_final, click_final) = self.get_pulsos(pulso_inicial, click_inicial, cpr)
         midicomp = str(compas).zfill(3) + ":" + str(pulso_inicial).zfill(2) + ":" + str(click_inicial).zfill(3)
         midicomp += " On  ch=" + canal + " note=" + self.get_nota() + "  vol=70\n"
-        
+
         if pulso_final < pulsos_por_compas:
             midicomp += str(compas).zfill(3) + ":" + str(pulso_final).zfill(2) + ":" + str(click_final).zfill(3)
         else:
