@@ -120,9 +120,9 @@ t_ignore = " \t"
 
 
 def t_error(token):
-    message = "Token desconocido:"
+    message = "Error. Token desconocido:"
     message += "\ntype:" + token.type
-    message += "\nvalue:" + str(token.value)
-    message += "\nline:" + str(token.lineno)
-    message += "\nposition:" + str(token.lexpos)
+    message += "\nvalor:" + str(token.value)
+    message += "\nlinea:" + str(token.lineno)
+    message += "\nposicion:" + str(token.lexpos)
     raise Exception(message)
