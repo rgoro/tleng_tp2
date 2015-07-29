@@ -37,13 +37,15 @@ echo "erroneo_11 $(head -1 files/erroneo_11_input.txt)"
 ./hacer_midi.sh erroneo_11
 echo "erroneo_12 $(head -1 files/erroneo_12_input.txt)"
 ./hacer_midi.sh erroneo_12
-echo "tempo_0 $(head -1 files/tempo_0_input.txt)"
-./hacer_midi.sh tempo_0
-echo "instrumento_fuera_rango $(head -1 files/instrumento_fuera_rango_input.txt)"
-./hacer_midi.sh instrumento_fuera_rango
-echo "octava_de_nota_fuera_de_rango $(head -1 files/octava_de_nota_fuera_de_rango_input.txt)"
-./hacer_midi.sh octava_de_nota_fuera_de_rango
-echo "tempo_negativo $(head -1 files/tempo_negativo_input.txt)"
-./hacer_midi.sh tempo_negativo
-echo "17_voces $(head -1 files/17_voces_input.txt)"
-./hacer_midi.sh 17_voces
+echo "erroneo_13 $(head -1 files/erroneo_13_input.txt)"
+./hacer_midi.sh erroneo_13
+echo "erroneo_14 $(head -1 files/erroneo_14_input.txt)"
+./hacer_midi.sh erroneo_14
+echo "erroneo_15 $(head -1 files/erroneo_15_input.txt)"
+./hacer_midi.sh erroneo_15
+echo "erroneo_16 $(head -1 files/erroneo_16_input.txt)"
+./hacer_midi.sh erroneo_16
+echo "erroneo_17 $(head -1 files/erroneo_17_input.txt)"
+./hacer_midi.sh erroneo_17
+echo "erroneo_18 $(head -1 files/erroneo_18_input.txt)"
+./hacer_midi.sh erroneo_18
