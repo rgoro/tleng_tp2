@@ -1,6 +1,4 @@
-// ----------------
-// Octava fuera de rango
-// ----------------
+// Octava demasiado alta
 
 #tempo negra 120
 #compas 3/4

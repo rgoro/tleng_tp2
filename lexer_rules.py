@@ -2,9 +2,6 @@
 tokens = [
     # Caracteres sueltos
     'COMA',
-    #    'PUNTO',
-    #    'MENOS',
-    #    'MAS',
     'BARRA',
     'IGUAL',
     'PAREN_L',
@@ -120,9 +117,5 @@ t_ignore = " \t"
 
 
 def t_error(token):
-    message = "Error. Token desconocido:"
-    message += "\ntype:" + token.type
-    message += "\nvalor:" + str(token.value)
-    message += "\nlinea:" + str(token.lineno)
-    message += "\nposicion:" + str(token.lexpos)
+    message = "Error: caracter inesperado '{0}' en la línea {1}".format(token.value[0], token.lineno)
     raise Exception(message)

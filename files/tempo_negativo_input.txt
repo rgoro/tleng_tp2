@@ -1,6 +1,4 @@
-// ----------------
-// Tempo negativo
-// ----------------
+// Ejemplo con tempo negativo
 
 #tempo negra -10
 #compas 3/4

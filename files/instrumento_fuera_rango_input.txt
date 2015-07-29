@@ -1,6 +1,4 @@
-// ----------------
-// Tempo fuera de rango
-// ----------------
+// Ejemplo con instrumento mayor a 127
 
 #tempo negra 120
 #compas 3/4

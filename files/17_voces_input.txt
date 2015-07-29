@@ -1,6 +1,4 @@
-// ----------------
-// Tempo 17 voces
-// ----------------
+// Ejemplo con más de 16 voces
 
 #tempo negra 120
 #compas 3/4

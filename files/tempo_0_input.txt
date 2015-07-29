@@ -1,6 +1,4 @@
-// ----------------
-// Tempo 0
-// ----------------
+// Ejemplo donde el tempo es 0
 
 #tempo negra 0
 #compas 3/4
