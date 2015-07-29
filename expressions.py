@@ -76,12 +76,9 @@ class Altura(object):
 
 
 class DefTempo(object):
-    def __init__(self, duracion, valor, lineno):
+    def __init__(self, duracion, valor):
         self.duracion = duracion
         self.valor = valor
-
-        if valor <= 0:
-            raise Exception('El #tempo debe ser mayor a 0 (línea {0})'.format(lineno))
 
     def get_tempo_midi(self):
         return (1000000 * 60 * self.duracion.get_valor_tempo()) / (4 * self.valor)
@@ -243,12 +240,16 @@ class Musileng(object):
         if len(self.voces) > 16:
             raise Exception("Error. Hay mas de 16 voces.")
         cant_compases = len(self.voces[0].compases)
+
         for index, voz in enumerate(self.voces, start=1):
-            if voz.instrumento not in self.constantes:
-                raise Exception("La constante para el instrumento {0} no fue definida (usada por la voz definida en la línea {1})".format(voz.instrumento, voz.lineno))
-            num_instrumento = self.constantes[voz.instrumento]
-            if num_instrumento < 0 or num_instrumento > 127:
-                raise Exception("El número de instrumento tiene que estar entre 0 y 127. Existe instrumento con número {0}. Usado en la línea {1}".format(num_instrumento, voz.lineno))
+            if not isinstance(voz.instrumento, int):
+                if voz.instrumento not in self.constantes:
+                    raise Exception("La constante para el instrumento {0} no fue definida (usada por la voz definida en la línea {1})".format(voz.instrumento, voz.lineno))
+                voz.instrumento = self.constantes[voz.instrumento]
+
+            if voz.instrumento < 0 or voz.instrumento > 127:
+                raise Exception("El número de instrumento de la voz definida en la línea {0} está fuera de rango. Es {1} y debe estar entre 0 y 127".format(voz.lineno, voz.instrumento))
+
             voz.validar(index, self.def_compas, cant_compases)
 
         return True
@@ -279,7 +280,7 @@ class Musileng(object):
                         if figura.octava in self.constantes.keys():
                             figura.octava = self.constantes[figura.octava]
                             if figura.octava < 1 or figura.octava > 9:
-                                raise Exception('Las octavas de las notas deben estar en el rango [1,9]. Octava fuera de rango con valor {0}. Usada en línea {1}'.format(figura.octava, figura.lineno))
+                                raise Exception("Octava fuera de rango con valor {0} en la línea {1}. Deben estar en el rango [1,9]. (Puede ser un error en la definición de una constante)".format(figura.octava, figura.lineno))
 
                         elif type(figura.octava) != int:
                             raise Exception("Constante «{0}» indefinida".format(figura.octava))

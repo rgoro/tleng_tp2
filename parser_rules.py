@@ -12,7 +12,10 @@ def p_musilen(sub):
 
 def p_def_tempo(sub):
     'def_tempo : DEF_TEMPO DURACION num'
-    sub[0] = DefTempo(Duracion(sub[2]), sub[3], sub.lineno(1))
+    if sub[3] <= 0:
+        raise Exception('El #tempo (línea {0}) debe ser mayor a 0'.format(sub.lineno(1)))
+
+    sub[0] = DefTempo(Duracion(sub[2]), sub[3])
 
 
 def p_def_compas(sub):
